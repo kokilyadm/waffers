@@ -210,6 +210,7 @@ class Waffers_Server_Config {
 		}
 
 		$new_rules    = self::generate_htaccess_rules() . "\n\n" . ltrim( $existing );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
 		$write_result = @file_put_contents( $path, $new_rules, LOCK_EX );
 
 		if ( false === $write_result ) {
@@ -245,6 +246,7 @@ class Waffers_Server_Config {
 			$existing = preg_replace( $p, '', $existing );
 		}
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
 		$write_result = @file_put_contents( $path, $existing, LOCK_EX );
 		if ( false === $write_result ) {
 			return array(
@@ -279,6 +281,7 @@ class Waffers_Server_Config {
 		}
 
 		$new_content  = self::generate_user_ini_directives( $auto_prepend ) . "\n\n" . ltrim( $existing );
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
 		$write_result = @file_put_contents( $path, $new_content, LOCK_EX );
 
 		if ( false === $write_result ) {
@@ -320,7 +323,7 @@ class Waffers_Server_Config {
 				wp_delete_file( $path );
 			}
 		} else {
-			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
 			@file_put_contents( $path, $cleaned, LOCK_EX );
 		}
 
@@ -371,6 +374,7 @@ class Waffers_Server_Config {
 		$code .= "    require_once \$early_file;\n";
 		$code .= "}\n";
 
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
 		$written = @file_put_contents( $target_file, $code, LOCK_EX );
 		if ( false === $written ) {
 			return array(

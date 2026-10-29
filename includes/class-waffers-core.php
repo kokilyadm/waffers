@@ -194,7 +194,7 @@ class Waffers_Core {
 			$upload = wp_upload_dir();
 			$upload_dir = ! empty( $upload['basedir'] ) ? $upload['basedir'] : '';
 			if ( ! empty( $upload_dir ) && wp_is_writable( $upload_dir ) ) {
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
 				@file_put_contents( $upload_dir . '/waffers-config.json', wp_json_encode( $options ), LOCK_EX );
 			}
 		}
