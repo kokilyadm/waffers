@@ -74,13 +74,13 @@ class Waffers_Scanner {
 		$results['score'] = max( 0, min( 100, $results['score'] ) );
 
 		if ( $results['score'] >= 85 ) {
-			$results['threat_level'] = __( 'Low Risk (Well Hardened)', 'waffers' );
+			$results['threat_level'] = __( 'Low Risk (Well Hardened)', 'waffers-the-layer-that-protects-you' );
 			$results['badge_class']  = 'status-good';
 		} elseif ( $results['score'] >= 60 ) {
-			$results['threat_level'] = __( 'Moderate Risk', 'waffers' );
+			$results['threat_level'] = __( 'Moderate Risk', 'waffers-the-layer-that-protects-you' );
 			$results['badge_class']  = 'status-warn';
 		} else {
-			$results['threat_level'] = __( 'High Vulnerability Exposure', 'waffers' );
+			$results['threat_level'] = __( 'High Vulnerability Exposure', 'waffers-the-layer-that-protects-you' );
 			$results['badge_class']  = 'status-danger';
 		}
 
@@ -113,30 +113,30 @@ class Waffers_Scanner {
 
 		if ( $is_vuln ) {
 			return array(
-				'title'          => __( 'PHP2Shell (CVE-2026-109618 / CVE-2026-109619)', 'waffers' ),
-				'status'         => __( 'VULNERABLE', 'waffers' ),
-				'severity'       => __( 'Critical (CVSS 9.2)', 'waffers' ),
+				'title'          => __( 'PHP2Shell (CVE-2026-109618 / CVE-2026-109619)', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'VULNERABLE', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'Critical (CVSS 9.2)', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 35,
 				'description'    => sprintf(
 					/* translators: %s: PHP version */
-					__( 'Running PHP %s, which is vulnerable to memory corruption and RCE via multipart/form-data and session.upload_progress. Patched in 8.2.35, 8.3.36, 8.4.27, 8.5.12.', 'waffers' ),
+					__( 'Running PHP %s, which is vulnerable to memory corruption and RCE via multipart/form-data and session.upload_progress. Patched in 8.2.35, 8.3.36, 8.4.27, 8.5.12.', 'waffers-the-layer-that-protects-you' ),
 					esc_html( $version )
 				),
-				'recommendation' => __( 'Upgrade server PHP package to a patched release. Ensure Waffers PHP2Shell shield and .user.ini hardening are active.', 'waffers' ),
+				'recommendation' => __( 'Upgrade server PHP package to a patched release. Ensure Waffers PHP2Shell shield and .user.ini hardening are active.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
-			'title'          => __( 'PHP2Shell (CVE-2026-109618 / CVE-2026-109619)', 'waffers' ),
-			'status'         => __( 'PATCHED', 'waffers' ),
-			'severity'       => __( 'Secure', 'waffers' ),
+			'title'          => __( 'PHP2Shell (CVE-2026-109618 / CVE-2026-109619)', 'waffers-the-layer-that-protects-you' ),
+			'status'         => __( 'PATCHED', 'waffers-the-layer-that-protects-you' ),
+			'severity'       => __( 'Secure', 'waffers-the-layer-that-protects-you' ),
 			'penalty'        => 0,
 			'description'    => sprintf(
 				/* translators: %s: PHP version */
-				__( 'Running PHP %s which contains official patches against PHP2Shell.', 'waffers' ),
+				__( 'Running PHP %s which contains official patches against PHP2Shell.', 'waffers-the-layer-that-protects-you' ),
 				esc_html( $version )
 			),
-			'recommendation' => __( 'Maintain current PHP version updates and keep defense-in-depth WAF rules active.', 'waffers' ),
+			'recommendation' => __( 'Maintain current PHP version updates and keep defense-in-depth WAF rules active.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -148,22 +148,22 @@ class Waffers_Scanner {
 
 		if ( $enabled ) {
 			return array(
-				'title'          => __( 'Session Upload Progress Directive', 'waffers' ),
-				'status'         => __( 'ACTIVE (Exposed)', 'waffers' ),
-				'severity'       => __( 'High', 'waffers' ),
+				'title'          => __( 'Session Upload Progress Directive', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'ACTIVE (Exposed)', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'High', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 20,
-				'description'    => __( 'session.upload_progress.enabled is currently set to ON (1). This exposes the PHP session upload parser to exploitation vectors.', 'waffers' ),
-				'recommendation' => __( 'Disable session upload progress globally via php.ini, or click "Hardening Tools" to set session.upload_progress.enabled = 0 in .user.ini.', 'waffers' ),
+				'description'    => __( 'session.upload_progress.enabled is currently set to ON (1). This exposes the PHP session upload parser to exploitation vectors.', 'waffers-the-layer-that-protects-you' ),
+				'recommendation' => __( 'Disable session upload progress globally via php.ini, or click "Hardening Tools" to set session.upload_progress.enabled = 0 in .user.ini.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
-			'title'          => __( 'Session Upload Progress Directive', 'waffers' ),
-			'status'         => __( 'DISABLED (Protected)', 'waffers' ),
-			'severity'       => __( 'Secure', 'waffers' ),
+			'title'          => __( 'Session Upload Progress Directive', 'waffers-the-layer-that-protects-you' ),
+			'status'         => __( 'DISABLED (Protected)', 'waffers-the-layer-that-protects-you' ),
+			'severity'       => __( 'Secure', 'waffers-the-layer-that-protects-you' ),
 			'penalty'        => 0,
-			'description'    => __( 'session.upload_progress.enabled is set to OFF (0). The session upload progress exploit vector is neutralized at the engine level.', 'waffers' ),
-			'recommendation' => __( 'No action required.', 'waffers' ),
+			'description'    => __( 'session.upload_progress.enabled is set to OFF (0). The session upload progress exploit vector is neutralized at the engine level.', 'waffers-the-layer-that-protects-you' ),
+			'recommendation' => __( 'No action required.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -188,47 +188,47 @@ class Waffers_Scanner {
 		if ( $is_vuln_version ) {
 			if ( $is_windows || $is_cgi ) {
 				return array(
-					'title'          => __( 'PHP-CGI Argument Injection (CVE-2024-4577)', 'waffers' ),
-					'status'         => __( 'CRITICAL RISK', 'waffers' ),
-					'severity'       => __( 'Critical (CVSS 9.8)', 'waffers' ),
+					'title'          => __( 'PHP-CGI Argument Injection (CVE-2024-4577)', 'waffers-the-layer-that-protects-you' ),
+					'status'         => __( 'CRITICAL RISK', 'waffers-the-layer-that-protects-you' ),
+					'severity'       => __( 'Critical (CVSS 9.8)', 'waffers-the-layer-that-protects-you' ),
 					'penalty'        => 30,
 					'description'    => sprintf(
 						/* translators: 1: PHP version, 2: OS, 3: SAPI */
-						__( 'Server is running PHP %1$s on %2$s (%3$s). This environment is susceptible to character Best-Fit mapping argument injection (%ad to -d auto_prepend_file).', 'waffers' ),
+						__( 'Server is running PHP %1$s on %2$s (%3$s). This environment is susceptible to character Best-Fit mapping argument injection (%ad to -d auto_prepend_file).', 'waffers-the-layer-that-protects-you' ),
 						esc_html( $version ),
 						esc_html( PHP_OS ),
 						esc_html( $sapi )
 					),
-					'recommendation' => __( 'Upgrade PHP immediately (>= 8.1.29, 8.2.20, 8.3.8). Waffers WAF is actively filtering soft-hyphen (%ad) and CGI argument flags.', 'waffers' ),
+					'recommendation' => __( 'Upgrade PHP immediately (>= 8.1.29, 8.2.20, 8.3.8). Waffers WAF is actively filtering soft-hyphen (%ad) and CGI argument flags.', 'waffers-the-layer-that-protects-you' ),
 				);
 			}
 
 			return array(
-				'title'          => __( 'PHP-CGI Argument Injection (CVE-2024-4577)', 'waffers' ),
-				'status'         => __( 'MONITORED', 'waffers' ),
-				'severity'       => __( 'Medium', 'waffers' ),
+				'title'          => __( 'PHP-CGI Argument Injection (CVE-2024-4577)', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'MONITORED', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'Medium', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 10,
 				'description'    => sprintf(
 					/* translators: 1: PHP version, 2: SAPI */
-					__( 'PHP %1$s is unpatched for CVE-2024-4577, but server is running on non-Windows OS with SAPI (%2$s). Vulnerability is usually latent unless CGI mapping is enabled.', 'waffers' ),
+					__( 'PHP %1$s is unpatched for CVE-2024-4577, but server is running on non-Windows OS with SAPI (%2$s). Vulnerability is usually latent unless CGI mapping is enabled.', 'waffers-the-layer-that-protects-you' ),
 					esc_html( $version ),
 					esc_html( $sapi )
 				),
-				'recommendation' => __( 'Upgrade PHP to patched version for full compliance. Waffers CGI Argument Shield is actively filtering exploit probes.', 'waffers' ),
+				'recommendation' => __( 'Upgrade PHP to patched version for full compliance. Waffers CGI Argument Shield is actively filtering exploit probes.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
-			'title'          => __( 'PHP-CGI Argument Injection (CVE-2024-4577)', 'waffers' ),
-			'status'         => __( 'PATCHED', 'waffers' ),
-			'severity'       => __( 'Secure', 'waffers' ),
+			'title'          => __( 'PHP-CGI Argument Injection (CVE-2024-4577)', 'waffers-the-layer-that-protects-you' ),
+			'status'         => __( 'PATCHED', 'waffers-the-layer-that-protects-you' ),
+			'severity'       => __( 'Secure', 'waffers-the-layer-that-protects-you' ),
 			'penalty'        => 0,
 			'description'    => sprintf(
 				/* translators: %s: PHP version */
-				__( 'PHP %s has official patches for CVE-2024-4577.', 'waffers' ),
+				__( 'PHP %s has official patches for CVE-2024-4577.', 'waffers-the-layer-that-protects-you' ),
 				esc_html( $version )
 			),
-			'recommendation' => __( 'Keep PHP updated and keep CGI query filters active.', 'waffers' ),
+			'recommendation' => __( 'Keep PHP updated and keep CGI query filters active.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -240,22 +240,22 @@ class Waffers_Scanner {
 
 		if ( $iconv_loaded ) {
 			return array(
-				'title'          => __( 'iconv / PHP Stream Filter Chains (CVE-2024-2961)', 'waffers' ),
-				'status'         => __( 'ACTIVE FILTERING (Protected)', 'waffers' ),
-				'severity'       => __( 'Protected by WAF (Dependent on glibc for OS)', 'waffers' ),
+				'title'          => __( 'iconv / PHP Stream Filter Chains (CVE-2024-2961)', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'ACTIVE FILTERING (Protected)', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'Protected by WAF (Dependent on glibc for OS)', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 0,
-				'description'    => __( 'PHP iconv extension is loaded. Waffers WAF is actively filtering and dropping all ISO-2022-CN-EXT and recursive filter chain exploit requests.', 'waffers' ),
-				'recommendation' => __( 'Your site is protected at the WAF tier. If you manage the Linux VPS/server, ensure system glibc is also updated (sudo apt update && sudo apt upgrade libc6).', 'waffers' ),
+				'description'    => __( 'PHP iconv extension is loaded. Waffers WAF is actively filtering and dropping all ISO-2022-CN-EXT and recursive filter chain exploit requests.', 'waffers-the-layer-that-protects-you' ),
+				'recommendation' => __( 'Your site is protected at the WAF tier. If you manage the Linux VPS/server, ensure system glibc is also updated (sudo apt update && sudo apt upgrade libc6).', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
-			'title'          => __( 'iconv / PHP Stream Filter Chains (CVE-2024-2961)', 'waffers' ),
-			'status'         => __( 'NOT LOADED', 'waffers' ),
-			'severity'       => __( 'Secure', 'waffers' ),
+			'title'          => __( 'iconv / PHP Stream Filter Chains (CVE-2024-2961)', 'waffers-the-layer-that-protects-you' ),
+			'status'         => __( 'NOT LOADED', 'waffers-the-layer-that-protects-you' ),
+			'severity'       => __( 'Secure', 'waffers-the-layer-that-protects-you' ),
 			'penalty'        => 0,
-			'description'    => __( 'iconv extension is not loaded in this PHP environment.', 'waffers' ),
-			'recommendation' => __( 'No action required.', 'waffers' ),
+			'description'    => __( 'iconv extension is not loaded in this PHP environment.', 'waffers-the-layer-that-protects-you' ),
+			'recommendation' => __( 'No action required.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -267,22 +267,22 @@ class Waffers_Scanner {
 
 		if ( $enabled ) {
 			return array(
-				'title'          => __( 'allow_url_include Directive', 'waffers' ),
-				'status'         => __( 'CRITICAL RISK', 'waffers' ),
-				'severity'       => __( 'Critical', 'waffers' ),
+				'title'          => __( 'allow_url_include Directive', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'CRITICAL RISK', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'Critical', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 25,
-				'description'    => __( 'allow_url_include is ON! This allows attackers who discover file inclusion vulnerabilities to execute arbitrary remote code instantly via php://input or data://.', 'waffers' ),
-				'recommendation' => __( 'Disable allow_url_include immediately in php.ini or via Waffers Server Hardening.', 'waffers' ),
+				'description'    => __( 'allow_url_include is ON! This allows attackers who discover file inclusion vulnerabilities to execute arbitrary remote code instantly via php://input or data://.', 'waffers-the-layer-that-protects-you' ),
+				'recommendation' => __( 'Disable allow_url_include immediately in php.ini or via Waffers Server Hardening.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
-			'title'          => __( 'allow_url_include Directive', 'waffers' ),
-			'status'         => __( 'DISABLED (Protected)', 'waffers' ),
-			'severity'       => __( 'Secure', 'waffers' ),
+			'title'          => __( 'allow_url_include Directive', 'waffers-the-layer-that-protects-you' ),
+			'status'         => __( 'DISABLED (Protected)', 'waffers-the-layer-that-protects-you' ),
+			'severity'       => __( 'Secure', 'waffers-the-layer-that-protects-you' ),
 			'penalty'        => 0,
-			'description'    => __( 'allow_url_include is safely turned OFF.', 'waffers' ),
-			'recommendation' => __( 'No action required.', 'waffers' ),
+			'description'    => __( 'allow_url_include is safely turned OFF.', 'waffers-the-layer-that-protects-you' ),
+			'recommendation' => __( 'No action required.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -296,31 +296,31 @@ class Waffers_Scanner {
 
 		if ( $is_early_loaded ) {
 			return array(
-				'title'          => __( 'Early WAF Bootstrap', 'waffers' ),
-				'status'         => __( 'ACTIVE (Early Defense Mode)', 'waffers' ),
-				'severity'       => __( 'Optimal', 'waffers' ),
+				'title'          => __( 'Early WAF Bootstrap', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'ACTIVE (Early Defense Mode)', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'Optimal', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 0,
-				'description'    => __( 'Waffers is executing at pre-boot stage before WordPress core, blocking engine-level exploits before application code loads.', 'waffers' ),
-				'recommendation' => __( 'Early defense is fully engaged.', 'waffers' ),
+				'description'    => __( 'Waffers is executing at pre-boot stage before WordPress core, blocking engine-level exploits before application code loads.', 'waffers-the-layer-that-protects-you' ),
+				'recommendation' => __( 'Early defense is fully engaged.', 'waffers-the-layer-that-protects-you' ),
 			);
 		} elseif ( $mu_installed ) {
 			return array(
-				'title'          => __( 'Early WAF Bootstrap', 'waffers' ),
-				'status'         => __( 'MU-PLUGIN ACTIVE', 'waffers' ),
-				'severity'       => __( 'Good', 'waffers' ),
+				'title'          => __( 'Early WAF Bootstrap', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'MU-PLUGIN ACTIVE', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'Good', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 0,
-				'description'    => __( 'Waffers is installed as a Must-Use plugin and loads ahead of standard plugins.', 'waffers' ),
-				'recommendation' => __( 'For pre-WordPress bootstrap, you may optionally configure auto_prepend_file in .user.ini.', 'waffers' ),
+				'description'    => __( 'Waffers is installed as a Must-Use plugin and loads ahead of standard plugins.', 'waffers-the-layer-that-protects-you' ),
+				'recommendation' => __( 'For pre-WordPress bootstrap, you may optionally configure auto_prepend_file in .user.ini.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
-			'title'          => __( 'Early WAF Bootstrap', 'waffers' ),
-			'status'         => __( 'STANDARD PLUGIN MODE', 'waffers' ),
-			'severity'       => __( 'Notice', 'waffers' ),
+			'title'          => __( 'Early WAF Bootstrap', 'waffers-the-layer-that-protects-you' ),
+			'status'         => __( 'STANDARD PLUGIN MODE', 'waffers-the-layer-that-protects-you' ),
+			'severity'       => __( 'Notice', 'waffers-the-layer-that-protects-you' ),
 			'penalty'        => 5,
-			'description'    => __( 'Firewall is running in standard plugin mode (hooked at plugins_loaded). Install the 1-click Must-Use loader for earlier interception.', 'waffers' ),
-			'recommendation' => __( 'Visit Server Hardening tab to install the 1-click Must-Use (MU) early loader.', 'waffers' ),
+			'description'    => __( 'Firewall is running in standard plugin mode (hooked at plugins_loaded). Install the 1-click Must-Use loader for earlier interception.', 'waffers-the-layer-that-protects-you' ),
+			'recommendation' => __( 'Visit Server Hardening tab to install the 1-click Must-Use (MU) early loader.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -341,22 +341,22 @@ class Waffers_Scanner {
 
 		if ( ! empty( $leaks ) ) {
 			return array(
-				'title'          => __( 'PHP Information Leakage', 'waffers' ),
-				'status'         => __( 'EXPOSURE DETECTED', 'waffers' ),
-				'severity'       => __( 'Warning', 'waffers' ),
+				'title'          => __( 'PHP Information Leakage', 'waffers-the-layer-that-protects-you' ),
+				'status'         => __( 'EXPOSURE DETECTED', 'waffers-the-layer-that-protects-you' ),
+				'severity'       => __( 'Warning', 'waffers-the-layer-that-protects-you' ),
 				'penalty'        => 5,
 				'description'    => implode( ', ', $leaks ),
-				'recommendation' => __( 'Click "Hardening Tools" to apply .user.ini hardening (sets expose_php = 0), or set expose_php = Off in php.ini. (Waffers runtime filter is also actively suppressing X-Powered-By).', 'waffers' ),
+				'recommendation' => __( 'Click "Hardening Tools" to apply .user.ini hardening (sets expose_php = 0), or set expose_php = Off in php.ini. (Waffers runtime filter is also actively suppressing X-Powered-By).', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
-			'title'          => __( 'PHP Information Leakage', 'waffers' ),
-			'status'         => __( 'SECURE', 'waffers' ),
-			'severity'       => __( 'Secure', 'waffers' ),
+			'title'          => __( 'PHP Information Leakage', 'waffers-the-layer-that-protects-you' ),
+			'status'         => __( 'SECURE', 'waffers-the-layer-that-protects-you' ),
+			'severity'       => __( 'Secure', 'waffers-the-layer-that-protects-you' ),
 			'penalty'        => 0,
-			'description'    => __( 'Sensitive PHP server directives are not leaking environment details to public visitors.', 'waffers' ),
-			'recommendation' => __( 'No action required.', 'waffers' ),
+			'description'    => __( 'Sensitive PHP server directives are not leaking environment details to public visitors.', 'waffers-the-layer-that-protects-you' ),
+			'recommendation' => __( 'No action required.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 }

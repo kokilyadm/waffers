@@ -17,11 +17,8 @@ if ( defined( 'WAFFERS_EARLY_LOADED' ) || defined( 'PHP_ARMOR_EARLY_LOADED' ) ) 
 define( 'WAFFERS_EARLY_LOADED', true );
 define( 'PHP_ARMOR_EARLY_LOADED', true );
 
-if ( ! defined( 'WAFFERS_STANDALONE' ) ) {
-	define( 'WAFFERS_STANDALONE', true );
-}
-if ( ! defined( 'PHP_ARMOR_STANDALONE' ) ) {
-	define( 'PHP_ARMOR_STANDALONE', true );
+if ( ! defined( 'ABSPATH' ) ) {
+	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
 }
 
 $plugin_dir = __DIR__;

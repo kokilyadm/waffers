@@ -92,7 +92,7 @@ class Waffers_Core {
 	 */
 	public function load_textdomain() {
 		load_plugin_textdomain(
-			'waffers',
+			'waffers-the-layer-that-protects-you',
 			false,
 			dirname( plugin_basename( WAFFERS_FILE ) ) . '/languages'
 		);
@@ -131,18 +131,18 @@ class Waffers_Core {
 			'<p>%s</p>' .
 			'<h3>%s</h3>' .
 			'<p>%s</p>',
-			esc_html__( 'Waffers Web Application Firewall', 'waffers' ),
-			esc_html__( 'Waffers operates locally on this web server to protect this website against PHP engine vulnerabilities, malicious requests, and remote exploit attempts.', 'waffers' ),
-			esc_html__( 'What Personal Data is Collected and Why', 'waffers' ),
-			esc_html__( 'When an HTTP request triggers a security defense rule, Waffers records the visitor’s IP address, User-Agent, request timestamp, target URI, and a sample of the intercepted attack payload in the local site database. This information is processed strictly under legitimate interest to prevent unauthorized system access, block exploits, and maintain site security.', 'waffers' ),
-			esc_html__( 'Data Retention & Deletion', 'waffers' ),
-			esc_html__( 'Recorded security logs are automatically pruned after 30 days or retained up to a maximum of 10,000 entries. Administrators may also clear all logged events at any time via the Waffers Attack Logs dashboard.', 'waffers' ),
-			esc_html__( 'Third-Party Sharing', 'waffers' ),
-			esc_html__( 'Waffers is a 100% self-hosted, standalone security firewall. No visitor data, IP addresses, or security telemetry are ever transmitted to external servers or third-party organizations.', 'waffers' )
+			esc_html__( 'Waffers Web Application Firewall', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Waffers operates locally on this web server to protect this website against PHP engine vulnerabilities, malicious requests, and remote exploit attempts.', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'What Personal Data is Collected and Why', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'When an HTTP request triggers a security defense rule, Waffers records the visitor’s IP address, User-Agent, request timestamp, target URI, and a sample of the intercepted attack payload in the local site database. This information is processed strictly under legitimate interest to prevent unauthorized system access, block exploits, and maintain site security.', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Data Retention & Deletion', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Recorded security logs are automatically pruned after 30 days or retained up to a maximum of 10,000 entries. Administrators may also clear all logged events at any time via the Waffers Attack Logs dashboard.', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Third-Party Sharing', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Waffers is a 100% self-hosted, standalone security firewall. No visitor data, IP addresses, or security telemetry are ever transmitted to external servers or third-party organizations.', 'waffers-the-layer-that-protects-you' )
 		);
 
 		wp_add_privacy_policy_content(
-			__( 'Waffers — The layer that protects you', 'waffers' ),
+			__( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ),
 			wp_kses_post( wpautop( $content, false ) )
 		);
 	}
@@ -185,28 +185,26 @@ class Waffers_Core {
 	 * Plugin deactivation routine.
 	 */
 	public static function deactivate() {
-		// Clean up standalone json config
-		$config_file = WAFFERS_PATH . 'waffers-config.json';
-		if ( file_exists( $config_file ) ) {
-			@unlink( $config_file );
-		}
-		$legacy_config = WAFFERS_PATH . 'php-armor-config.json';
-		if ( file_exists( $legacy_config ) ) {
-			@unlink( $legacy_config );
+		if ( function_exists( 'wp_upload_dir' ) ) {
+			$upload = wp_upload_dir();
+			if ( ! empty( $upload['basedir'] ) && file_exists( $upload['basedir'] . '/waffers-config.json' ) ) {
+				@unlink( $upload['basedir'] . '/waffers-config.json' );
+			}
 		}
 	}
 
 	/**
-	 * Sync WordPress settings to a local JSON file for ultra-fast standalone reading.
+	 * Sync WordPress settings to a local JSON file in uploads directory for standalone reading.
 	 *
 	 * @param array $options Options array.
 	 */
 	public static function sync_standalone_config( $options ) {
-		$config_file = WAFFERS_PATH . 'waffers-config.json';
-		@file_put_contents( $config_file, json_encode( $options, JSON_PRETTY_PRINT ), LOCK_EX );
-
-		$legacy_file = WAFFERS_PATH . 'php-armor-config.json';
-		@file_put_contents( $legacy_file, json_encode( $options, JSON_PRETTY_PRINT ), LOCK_EX );
+		if ( function_exists( 'wp_upload_dir' ) ) {
+			$upload = wp_upload_dir();
+			if ( ! empty( $upload['basedir'] ) && is_writable( $upload['basedir'] ) ) {
+				@file_put_contents( $upload['basedir'] . '/waffers-config.json', wp_json_encode( $options ), LOCK_EX );
+			}
+		}
 	}
 }
 

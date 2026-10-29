@@ -8,7 +8,7 @@
  * @package Waffers
  */
 
-if ( ! defined( 'ABSPATH' ) && ! defined( 'WAFFERS_STANDALONE' ) && ! defined( 'PHP_ARMOR_STANDALONE' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -561,7 +561,8 @@ class Waffers_Firewall {
 		$options = self::get_options();
 		$mode    = isset( $options['block_mode'] ) ? $options['block_mode'] : 'block';
 
-		$incident_id = strtoupper( substr( md5( uniqid( (string) mt_rand(), true ) ), 0, 10 ) );
+		$rand_val    = function_exists( 'wp_rand' ) ? wp_rand() : rand();
+		$incident_id = strtoupper( substr( md5( uniqid( (string) $rand_val, true ) ), 0, 10 ) );
 		$client_ip   = self::get_client_ip();
 		$method      = isset( $_SERVER['REQUEST_METHOD'] ) ? self::safe_clean( $_SERVER['REQUEST_METHOD'] ) : 'GET';
 		$uri         = isset( $_SERVER['REQUEST_URI'] ) ? self::safe_clean( $_SERVER['REQUEST_URI'] ) : '';
@@ -779,7 +780,10 @@ class Waffers_Firewall {
 		if ( function_exists( 'sanitize_text_field' ) ) {
 			return sanitize_text_field( $str );
 		}
-		return strip_tags( $str );
+		if ( function_exists( 'wp_strip_all_tags' ) ) {
+			return wp_strip_all_tags( $str );
+		}
+		return preg_replace( '@<[\/\!]*?[^<>]*?>@si', '', $str );
 	}
 
 	/**

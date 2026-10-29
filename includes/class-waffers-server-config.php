@@ -215,13 +215,13 @@ class Waffers_Server_Config {
 		if ( false === $write_result ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Unable to write to .htaccess. Please check file permissions or apply rules manually.', 'waffers' ),
+				'message' => __( 'Unable to write to .htaccess. Please check file permissions or apply rules manually.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
 			'success' => true,
-			'message' => __( 'Successfully installed Waffers hardening rules in .htaccess.', 'waffers' ),
+			'message' => __( 'Successfully installed Waffers hardening rules in .htaccess.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -233,7 +233,7 @@ class Waffers_Server_Config {
 	public static function remove_htaccess() {
 		$path = self::get_htaccess_path();
 		if ( ! file_exists( $path ) ) {
-			return array( 'success' => true, 'message' => __( '.htaccess file does not exist.', 'waffers' ) );
+			return array( 'success' => true, 'message' => __( '.htaccess file does not exist.', 'waffers-the-layer-that-protects-you' ) );
 		}
 
 		$existing = file_get_contents( $path );
@@ -249,13 +249,13 @@ class Waffers_Server_Config {
 		if ( false === $write_result ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Failed to remove Waffers block from .htaccess due to file permissions.', 'waffers' ),
+				'message' => __( 'Failed to remove Waffers block from .htaccess due to file permissions.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
 			'success' => true,
-			'message' => __( 'Waffers rules removed from .htaccess.', 'waffers' ),
+			'message' => __( 'Waffers rules removed from .htaccess.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -284,13 +284,13 @@ class Waffers_Server_Config {
 		if ( false === $write_result ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Unable to write to .user.ini. Check file permissions or create the file manually.', 'waffers' ),
+				'message' => __( 'Unable to write to .user.ini. Check file permissions or create the file manually.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
 		return array(
 			'success' => true,
-			'message' => __( 'Successfully wrote Waffers hardening directives to .user.ini. (Changes typically take 1-5 minutes for PHP-FPM to reload).', 'waffers' ),
+			'message' => __( 'Successfully wrote Waffers hardening directives to .user.ini. (Changes typically take 1-5 minutes for PHP-FPM to reload).', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -302,7 +302,7 @@ class Waffers_Server_Config {
 	public static function remove_user_ini() {
 		$path = self::get_user_ini_path();
 		if ( ! file_exists( $path ) ) {
-			return array( 'success' => true, 'message' => __( '.user.ini does not exist.', 'waffers' ) );
+			return array( 'success' => true, 'message' => __( '.user.ini does not exist.', 'waffers-the-layer-that-protects-you' ) );
 		}
 
 		$existing = file_get_contents( $path );
@@ -323,7 +323,7 @@ class Waffers_Server_Config {
 
 		return array(
 			'success' => true,
-			'message' => __( 'Waffers directives removed from .user.ini.', 'waffers' ),
+			'message' => __( 'Waffers directives removed from .user.ini.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -338,7 +338,7 @@ class Waffers_Server_Config {
 			if ( ! @mkdir( $mu_dir, 0755, true ) ) {
 				return array(
 					'success' => false,
-					'message' => __( 'Could not create wp-content/mu-plugins directory. Check folder permissions.', 'waffers' ),
+					'message' => __( 'Could not create wp-content/mu-plugins directory. Check folder permissions.', 'waffers-the-layer-that-protects-you' ),
 				);
 			}
 		}
@@ -371,7 +371,7 @@ class Waffers_Server_Config {
 		if ( false === $written ) {
 			return array(
 				'success' => false,
-				'message' => __( 'Unable to write early loader file to wp-content/mu-plugins/.', 'waffers' ),
+				'message' => __( 'Unable to write early loader file to wp-content/mu-plugins/.', 'waffers-the-layer-that-protects-you' ),
 			);
 		}
 
@@ -383,7 +383,7 @@ class Waffers_Server_Config {
 
 		return array(
 			'success' => true,
-			'message' => __( 'Waffers Must-Use Early Loader installed successfully! It will now execute before all standard plugins.', 'waffers' ),
+			'message' => __( 'Waffers Must-Use Early Loader installed successfully! It will now execute before all standard plugins.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 
@@ -398,7 +398,7 @@ class Waffers_Server_Config {
 			if ( ! @unlink( $target_file ) ) {
 				return array(
 					'success' => false,
-					'message' => __( 'Failed to delete early loader from wp-content/mu-plugins/.', 'waffers' ),
+					'message' => __( 'Failed to delete early loader from wp-content/mu-plugins/.', 'waffers-the-layer-that-protects-you' ),
 				);
 			}
 		}
@@ -410,7 +410,7 @@ class Waffers_Server_Config {
 
 		return array(
 			'success' => true,
-			'message' => __( 'Waffers Must-Use Early Loader removed.', 'waffers' ),
+			'message' => __( 'Waffers Must-Use Early Loader removed.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 }

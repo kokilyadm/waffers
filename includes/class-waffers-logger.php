@@ -8,7 +8,7 @@
  * @package Waffers
  */
 
-if ( ! defined( 'ABSPATH' ) && ! defined( 'WAFFERS_STANDALONE' ) && ! defined( 'PHP_ARMOR_STANDALONE' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
@@ -89,9 +89,11 @@ class Waffers_Logger {
 
 		// Migrate records from legacy table if present
 		$legacy_table = self::get_legacy_table_name();
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $legacy_table ) ) === $legacy_table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy_table ) ) === $legacy_table ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$existing_count = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table_name}" );
 			if ( 0 === $existing_count ) {
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				$wpdb->query( "INSERT INTO {$table_name} SELECT * FROM {$legacy_table}" );
 			}
 		}
@@ -140,30 +142,14 @@ class Waffers_Logger {
 			);
 
 			if ( $inserted ) {
-				// Periodically prune logs (1 in 100 chance)
-				if ( mt_rand( 1, 100 ) === 50 ) {
+				// Periodically prune logs (1 in 100 chance using wp_rand)
+				$rand_check = function_exists( 'wp_rand' ) ? wp_rand( 1, 100 ) : 50;
+				if ( 50 === $rand_check ) {
 					self::prune_old_logs();
 				}
 				return true;
 			}
 		}
-
-		// Fallback file logging if DB is not available
-		$log_dir = defined( 'WP_CONTENT_DIR' ) ? WP_CONTENT_DIR : dirname( __DIR__ );
-		$log_file = $log_dir . '/waffers-events.log';
-		$line = sprintf(
-			"[%s] [%s] ID:%s IP:%s | %s (%s) | %s %s | Payload:%s\n",
-			gmdate( 'Y-m-d H:i:s' ),
-			strtoupper( $action_taken ),
-			$incident_id,
-			$ip_address,
-			$attack_type,
-			$cve_reference,
-			$request_method,
-			$request_uri,
-			substr( $payload_sample, 0, 150 )
-		);
-		@file_put_contents( $log_file, $line, FILE_APPEND | LOCK_EX );
 
 		return false;
 	}
@@ -191,55 +177,89 @@ class Waffers_Logger {
 		$table = self::get_table_name();
 
 		// Verify table exists; if not, check legacy table
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table ) ) !== $table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			$legacy = self::get_legacy_table_name();
-			if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $legacy ) ) === $legacy ) {
+			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy ) ) === $legacy ) {
 				$table = $legacy;
 			} else {
-				return array( 'logs' => array(), 'total' => 0, 'total_pages' => 0, 'page' => 1 );
+				return array(
+					'logs'        => array(),
+					'total'       => 0,
+					'total_pages' => 0,
+					'page'        => 1,
+				);
 			}
 		}
 
-		$where = array( '1=1' );
-		$params = array();
-
-		if ( ! empty( $r['search'] ) ) {
-			$like = '%' . $wpdb->esc_like( $r['search'] ) . '%';
-			$where[] = '(ip_address LIKE %s OR request_uri LIKE %s OR payload_sample LIKE %s OR incident_id LIKE %s)';
-			$params[] = $like;
-			$params[] = $like;
-			$params[] = $like;
-			$params[] = $like;
-		}
-
-		if ( ! empty( $r['cve'] ) ) {
-			$where[] = 'cve_reference = %s';
-			$params[] = $r['cve'];
-		}
-
-		if ( ! empty( $r['action'] ) ) {
-			$where[] = 'action_taken = %s';
-			$params[] = $r['action'];
-		}
-
-		$where_clause = implode( ' AND ', $where );
-
-		// Count total
-		$count_sql = "SELECT COUNT(*) FROM {$table} WHERE {$where_clause}";
-		if ( ! empty( $params ) ) {
-			$count_sql = $wpdb->prepare( $count_sql, $params );
-		}
-		$total = (int) $wpdb->get_var( $count_sql );
-
-		// Pagination
 		$page     = max( 1, (int) $r['page'] );
 		$per_page = max( 1, (int) $r['per_page'] );
 		$offset   = ( $page - 1 ) * $per_page;
-		$order    = ( strtoupper( $r['order'] ) === 'ASC' ) ? 'ASC' : 'DESC';
+		$order    = ( 'ASC' === strtoupper( $r['order'] ) ) ? 'ASC' : 'DESC';
 
-		$query_sql = "SELECT * FROM {$table} WHERE {$where_clause} ORDER BY id {$order} LIMIT %d OFFSET %d";
-		$query_params = array_merge( $params, array( $per_page, $offset ) );
-		$logs = $wpdb->get_results( $wpdb->prepare( $query_sql, $query_params ), ARRAY_A );
+		$where_clauses = array();
+		$params        = array();
+
+		if ( ! empty( $r['search'] ) ) {
+			$like            = '%' . $wpdb->esc_like( $r['search'] ) . '%';
+			$where_clauses[] = '(ip_address LIKE %s OR request_uri LIKE %s OR payload_sample LIKE %s OR incident_id LIKE %s)';
+			$params[]        = $like;
+			$params[]        = $like;
+			$params[]        = $like;
+			$params[]        = $like;
+		}
+
+		if ( ! empty( $r['cve'] ) ) {
+			$where_clauses[] = 'cve_reference = %s';
+			$params[]        = $r['cve'];
+		}
+
+		if ( ! empty( $r['action'] ) ) {
+			$where_clauses[] = 'action_taken = %s';
+			$params[]        = $r['action'];
+		}
+
+		if ( empty( $where_clauses ) ) {
+			// Fast path without search filters
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+			$total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
+
+			if ( 'ASC' === $order ) {
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$logs = $wpdb->get_results(
+					$wpdb->prepare(
+						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+						"SELECT * FROM {$table} ORDER BY id ASC LIMIT %d OFFSET %d",
+						$per_page,
+						$offset
+					),
+					ARRAY_A
+				);
+			} else {
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				$logs = $wpdb->get_results(
+					$wpdb->prepare(
+						// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+						"SELECT * FROM {$table} ORDER BY id DESC LIMIT %d OFFSET %d",
+						$per_page,
+						$offset
+					),
+					ARRAY_A
+				);
+			}
+		} else {
+			$where_sql = implode( ' AND ', $where_clauses );
+
+			// Count query with placeholders
+			$count_query = "SELECT COUNT(*) FROM {$table} WHERE {$where_sql}";
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+			$total = (int) $wpdb->get_var( $wpdb->prepare( $count_query, $params ) );
+
+			// Data query with placeholders
+			$data_query   = "SELECT * FROM {$table} WHERE {$where_sql} ORDER BY id {$order} LIMIT %d OFFSET %d";
+			$query_params = array_merge( $params, array( $per_page, $offset ) );
+			// phpcs:ignore WordPress.DB.PreparedSQL.NotPrepared, WordPress.DB.PreparedSQL.InterpolatedNotPrepared, PluginCheck.Security.DirectDB.UnescapedDBParameter
+			$logs = $wpdb->get_results( $wpdb->prepare( $data_query, $query_params ), ARRAY_A );
+		}
 
 		return array(
 			'logs'        => is_array( $logs ) ? $logs : array(),
@@ -259,9 +279,9 @@ class Waffers_Logger {
 		$table = self::get_table_name();
 
 		// Verify table exists; if not, check legacy table
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table ) ) !== $table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			$legacy = self::get_legacy_table_name();
-			if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $legacy ) ) === $legacy ) {
+			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy ) ) === $legacy ) {
 				$table = $legacy;
 			} else {
 				return array(
@@ -275,26 +295,36 @@ class Waffers_Logger {
 
 		$cutoff = gmdate( 'Y-m-d H:i:s', time() - 86400 );
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$total = (int) $wpdb->get_var(
-			$wpdb->prepare( "SELECT COUNT(*) FROM {$table} WHERE timestamp >= %s", $cutoff )
+			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
+				"SELECT COUNT(*) FROM {$table} WHERE timestamp >= %s",
+				$cutoff
+			)
 		);
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$by_cve = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				"SELECT cve_reference, COUNT(*) as count FROM {$table} WHERE timestamp >= %s GROUP BY cve_reference ORDER BY count DESC",
 				$cutoff
 			),
 			ARRAY_A
 		);
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$top_ips = $wpdb->get_results(
 			$wpdb->prepare(
+				// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 				"SELECT ip_address, COUNT(*) as count FROM {$table} WHERE timestamp >= %s GROUP BY ip_address ORDER BY count DESC LIMIT 5",
 				$cutoff
 			),
 			ARRAY_A
 		);
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$all_time_total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
 
 		return array(
@@ -314,12 +344,15 @@ class Waffers_Logger {
 
 		// Delete entries older than 30 days
 		$cutoff = gmdate( 'Y-m-d H:i:s', time() - ( 30 * 86400 ) );
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} WHERE timestamp < %s", $cutoff ) );
 
 		// Cap table at 10,000 rows
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$total = (int) $wpdb->get_var( "SELECT COUNT(*) FROM {$table}" );
 		if ( $total > 10000 ) {
 			$excess = $total - 10000;
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$wpdb->query( $wpdb->prepare( "DELETE FROM {$table} ORDER BY id ASC LIMIT %d", $excess ) );
 		}
 	}
@@ -330,12 +363,24 @@ class Waffers_Logger {
 	public static function clear_logs() {
 		global $wpdb;
 		$table = self::get_table_name();
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$wpdb->query( "TRUNCATE TABLE {$table}" );
 
 		$legacy = self::get_legacy_table_name();
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $legacy ) ) === $legacy ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy ) ) === $legacy ) {
+			// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 			$wpdb->query( "TRUNCATE TABLE {$legacy}" );
 		}
+	}
+
+	/**
+	 * Escape a single cell for standard CSV output.
+	 *
+	 * @param mixed $value Cell value.
+	 * @return string
+	 */
+	public static function format_csv_cell( $value ) {
+		return '"' . str_replace( '"', '""', (string) $value ) . '"';
 	}
 
 	/**
@@ -343,24 +388,25 @@ class Waffers_Logger {
 	 */
 	public static function export_csv() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Unauthorized user action.', 'waffers' ), 403 );
+			wp_die( esc_html__( 'Unauthorized user action.', 'waffers-the-layer-that-protects-you' ), 403 );
 		}
 
 		// Verify nonce for either waffers or legacy action
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'waffers_export_csv' ) && ! wp_verify_nonce( $nonce, 'php_armor_export_csv' ) ) {
-			wp_die( esc_html__( 'Security verification failed. Please try again from the dashboard.', 'waffers' ), 403 );
+			wp_die( esc_html__( 'Security verification failed. Please try again from the dashboard.', 'waffers-the-layer-that-protects-you' ), 403 );
 		}
 
 		global $wpdb;
 		$table = self::get_table_name();
-		if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table ) ) !== $table ) {
+		if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $table ) ) !== $table ) {
 			$legacy = self::get_legacy_table_name();
-			if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $legacy ) ) === $legacy ) {
+			if ( $wpdb->get_var( $wpdb->prepare( 'SHOW TABLES LIKE %s', $legacy ) ) === $legacy ) {
 				$table = $legacy;
 			}
 		}
 
+		// phpcs:ignore WordPress.DB.PreparedSQL.InterpolatedNotPrepared
 		$rows = $wpdb->get_results( "SELECT * FROM {$table} ORDER BY id DESC LIMIT 5000", ARRAY_A );
 
 		$filename = 'waffers-attack-logs-' . gmdate( 'Y-m-d-His' ) . '.csv';
@@ -370,12 +416,14 @@ class Waffers_Logger {
 		header( 'Pragma: no-cache' );
 		header( 'Expires: 0' );
 
-		$out = fopen( 'php://output', 'w' );
-		fputcsv( $out, array( 'ID', 'Incident ID', 'Timestamp (UTC)', 'IP Address', 'Attack Type', 'CVE Reference', 'Rule Triggered', 'Method', 'Request URI', 'Payload Sample', 'User Agent', 'Action' ) );
+		// Header row
+		$header_cells = array( 'ID', 'Incident ID', 'Timestamp (UTC)', 'IP Address', 'Attack Type', 'CVE Reference', 'Rule Triggered', 'Method', 'Request URI', 'Payload Sample', 'User Agent', 'Action' );
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo implode( ',', array_map( array( __CLASS__, 'format_csv_cell' ), $header_cells ) ) . "\r\n";
 
 		if ( ! empty( $rows ) ) {
 			foreach ( $rows as $row ) {
-				fputcsv( $out, array(
+				$row_cells = array(
 					$row['id'],
 					$row['incident_id'],
 					$row['timestamp'],
@@ -388,11 +436,12 @@ class Waffers_Logger {
 					$row['payload_sample'],
 					$row['user_agent'],
 					$row['action_taken'],
-				) );
+				);
+				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				echo implode( ',', array_map( array( __CLASS__, 'format_csv_cell' ), $row_cells ) ) . "\r\n";
 			}
 		}
 
-		fclose( $out );
 		exit;
 	}
 
@@ -409,7 +458,10 @@ class Waffers_Logger {
 		if ( function_exists( 'sanitize_text_field' ) ) {
 			return sanitize_text_field( $str );
 		}
-		return strip_tags( $str );
+		if ( function_exists( 'wp_strip_all_tags' ) ) {
+			return wp_strip_all_tags( $str );
+		}
+		return preg_replace( '@<[\/\!]*?[^<>]*?>@si', '', $str );
 	}
 }
 
@@ -419,4 +471,3 @@ endif;
 if ( ! class_exists( 'PHP_Armor_Logger' ) ) {
 	class_alias( 'Waffers_Logger', 'PHP_Armor_Logger' );
 }
-

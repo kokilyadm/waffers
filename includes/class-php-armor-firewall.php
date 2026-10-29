@@ -5,7 +5,7 @@
  * @package Waffers
  */
 
-if ( ! defined( 'ABSPATH' ) && ! defined( 'WAFFERS_STANDALONE' ) && ! defined( 'PHP_ARMOR_STANDALONE' ) ) {
+if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
