@@ -1,4 +1,4 @@
-=== Waffers — The layer that protects you ===
+=== Waffers ===
 Contributors: kokilyadm, rakeshkumar, waffers
 Tags: security, firewall, waf, cve-2024-4577, vulnerability
 Requires at least: 5.4
