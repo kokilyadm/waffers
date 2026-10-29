@@ -12,6 +12,73 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+if ( ! function_exists( 'wp_unslash' ) ) {
+	/**
+	 * Polyfill for wp_unslash outside WordPress runtime.
+	 *
+	 * @param mixed $value Value to unslash.
+	 * @return mixed
+	 */
+	function wp_unslash( $value ) {
+		return is_array( $value ) ? array_map( 'wp_unslash', $value ) : stripslashes( (string) $value );
+	}
+}
+if ( ! function_exists( 'esc_html' ) ) {
+	/**
+	 * Polyfill for esc_html outside WordPress runtime.
+	 *
+	 * @param string $text Text to escape.
+	 * @return string
+	 */
+	function esc_html( $text ) {
+		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
+	}
+}
+if ( ! function_exists( 'esc_attr' ) ) {
+	/**
+	 * Polyfill for esc_attr outside WordPress runtime.
+	 *
+	 * @param string $text Text to escape.
+	 * @return string
+	 */
+	function esc_attr( $text ) {
+		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
+	}
+}
+if ( ! function_exists( 'esc_html_e' ) ) {
+	/**
+	 * Polyfill for esc_html_e outside WordPress runtime.
+	 *
+	 * @param string $text Text to escape.
+	 * @param string $domain Text domain.
+	 */
+	function esc_html_e( $text, $domain = 'default' ) {
+		echo esc_html( $text );
+	}
+}
+if ( ! function_exists( 'sanitize_text_field' ) ) {
+	/**
+	 * Polyfill for sanitize_text_field outside WordPress runtime.
+	 *
+	 * @param string $str Text to sanitize.
+	 * @return string
+	 */
+	function sanitize_text_field( $str ) {
+		return is_string( $str ) ? trim( wp_strip_all_tags( $str ) ) : '';
+	}
+}
+if ( ! function_exists( 'wp_strip_all_tags' ) ) {
+	/**
+	 * Polyfill for wp_strip_all_tags outside WordPress runtime.
+	 *
+	 * @param string $str String with tags.
+	 * @return string
+	 */
+	function wp_strip_all_tags( $str ) {
+		return is_string( $str ) ? trim( preg_replace( '@<[\/\!]*?[^<>]*?>@si', '', $str ) ) : '';
+	}
+}
+
 class Waffers_Firewall {
 
 	/**
@@ -164,11 +231,14 @@ class Waffers_Firewall {
 	 * @return array|false Threat details or false.
 	 */
 	public static function detect_cve_2024_4577() {
-		$raw_query = isset( $_SERVER['QUERY_STRING'] ) ? (string) $_SERVER['QUERY_STRING'] : '';
-		$raw_uri   = isset( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$raw_query = isset( $_SERVER['QUERY_STRING'] ) ? (string) wp_unslash( $_SERVER['QUERY_STRING'] ) : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$raw_uri   = isset( $_SERVER['REQUEST_URI'] ) ? (string) wp_unslash( $_SERVER['REQUEST_URI'] ) : '';
 
 		// Also collect raw command line arguments if running in CGI mode
-		$argv = isset( $_SERVER['argv'] ) && is_array( $_SERVER['argv'] ) ? implode( ' ', $_SERVER['argv'] ) : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$argv = isset( $_SERVER['argv'] ) && is_array( $_SERVER['argv'] ) ? implode( ' ', array_map( 'strval', (array) wp_unslash( $_SERVER['argv'] ) ) ) : '';
 
 		$targets = array(
 			'QUERY_STRING' => $raw_query,
@@ -245,7 +315,8 @@ class Waffers_Firewall {
 	 */
 	public static function detect_php2shell() {
 		// Only relevant on POST requests
-		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || strtoupper( $_SERVER['REQUEST_METHOD'] ) !== 'POST' ) {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		if ( ! isset( $_SERVER['REQUEST_METHOD'] ) || strtoupper( sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) ) !== 'POST' ) {
 			return false;
 		}
 
@@ -258,12 +329,16 @@ class Waffers_Firewall {
 		$has_progress = false;
 		$progress_val = '';
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		if ( isset( $_POST[ $progress_name ] ) ) {
 			$has_progress = true;
-			$progress_val = (string) $_POST[ $progress_name ];
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			$progress_val = (string) wp_unslash( $_POST[ $progress_name ] );
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		} elseif ( isset( $_POST['PHP_SESSION_UPLOAD_PROGRESS'] ) ) {
 			$has_progress = true;
-			$progress_val = (string) $_POST['PHP_SESSION_UPLOAD_PROGRESS'];
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			$progress_val = (string) wp_unslash( $_POST['PHP_SESSION_UPLOAD_PROGRESS'] );
 		}
 
 		if ( $has_progress ) {
@@ -284,7 +359,9 @@ class Waffers_Firewall {
 			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
 			if ( ! $is_logged_in && empty( $_FILES ) ) {
 				// Disarm parameter: unset it so PHP engine will not initiate session upload tracking structures
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing
 				unset( $_POST[ $progress_name ] );
+				// phpcs:ignore WordPress.Security.NonceVerification.Missing
 				unset( $_POST['PHP_SESSION_UPLOAD_PROGRESS'] );
 
 				return array(
@@ -321,17 +398,23 @@ class Waffers_Firewall {
 	public static function detect_stream_wrapper_exploits() {
 		$inputs = array();
 
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET ) ) {
-			$inputs['GET'] = $_GET;
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$inputs['GET'] = wp_unslash( $_GET );
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( ! empty( $_POST ) ) {
-			$inputs['POST'] = $_POST;
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$inputs['POST'] = wp_unslash( $_POST );
 		}
 		if ( ! empty( $_COOKIE ) ) {
-			$inputs['COOKIE'] = $_COOKIE;
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$inputs['COOKIE'] = wp_unslash( $_COOKIE );
 		}
 		if ( isset( $_SERVER['REQUEST_URI'] ) ) {
-			$inputs['URI'] = $_SERVER['REQUEST_URI'];
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			$inputs['URI'] = (string) wp_unslash( $_SERVER['REQUEST_URI'] );
 		}
 
 		// Vulnerable charsets for CVE-2024-2961 and iconv heap corruption
@@ -428,11 +511,13 @@ class Waffers_Firewall {
 	 * @return array|false Threat details or false.
 	 */
 	public static function detect_multipart_anomaly() {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		if ( empty( $_SERVER['CONTENT_TYPE'] ) ) {
 			return false;
 		}
 
-		$content_type = (string) $_SERVER['CONTENT_TYPE'];
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$content_type = (string) wp_unslash( $_SERVER['CONTENT_TYPE'] );
 
 		if ( stripos( $content_type, 'multipart/form-data' ) !== false ) {
 			// Check for control characters or null bytes in Content-Type
@@ -469,16 +554,21 @@ class Waffers_Firewall {
 	public static function detect_object_injection( $ignore_admin_check = false ) {
 		// In WP admin, allow legitimate POST actions from trusted administrators (e.g. tools, import/export)
 		// But always scan GET requests, and always scan when forced (such as in simulations).
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! $ignore_admin_check && empty( $_GET ) && function_exists( 'is_admin' ) && is_admin() && function_exists( 'current_user_can' ) && current_user_can( 'manage_options' ) ) {
 			return false;
 		}
 
 		$inputs = array();
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		if ( ! empty( $_GET ) ) {
-			$inputs['GET'] = $_GET;
+			// phpcs:ignore WordPress.Security.NonceVerification.Recommended, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$inputs['GET'] = wp_unslash( $_GET );
 		}
+		// phpcs:ignore WordPress.Security.NonceVerification.Missing
 		if ( ! empty( $_POST ) ) {
-			$inputs['POST'] = $_POST;
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$inputs['POST'] = wp_unslash( $_POST );
 		}
 
 		foreach ( $inputs as $type => $data ) {
@@ -564,9 +654,12 @@ class Waffers_Firewall {
 		$rand_val    = function_exists( 'wp_rand' ) ? wp_rand() : rand();
 		$incident_id = strtoupper( substr( md5( uniqid( (string) $rand_val, true ) ), 0, 10 ) );
 		$client_ip   = self::get_client_ip();
-		$method      = isset( $_SERVER['REQUEST_METHOD'] ) ? self::safe_clean( $_SERVER['REQUEST_METHOD'] ) : 'GET';
-		$uri         = isset( $_SERVER['REQUEST_URI'] ) ? self::safe_clean( $_SERVER['REQUEST_URI'] ) : '';
-		$user_agent  = isset( $_SERVER['HTTP_USER_AGENT'] ) ? self::safe_clean( $_SERVER['HTTP_USER_AGENT'] ) : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$method      = isset( $_SERVER['REQUEST_METHOD'] ) ? self::safe_clean( wp_unslash( $_SERVER['REQUEST_METHOD'] ) ) : 'GET';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$uri         = isset( $_SERVER['REQUEST_URI'] ) ? self::safe_clean( wp_unslash( $_SERVER['REQUEST_URI'] ) ) : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$user_agent  = isset( $_SERVER['HTTP_USER_AGENT'] ) ? self::safe_clean( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) ) : '';
 
 		self::$last_block = array(
 			'incident_id' => $incident_id,
@@ -635,9 +728,9 @@ class Waffers_Firewall {
 			header( 'Expires: 0' );
 		}
 
-		$options = self::get_options();
-		$custom_msg = ! empty( $options['custom_block_message'] ) ? self::safe_esc( $options['custom_block_message'] ) : '';
-		$client_ip  = self::safe_esc( self::get_client_ip() );
+		$options    = self::get_options();
+		$custom_msg = ! empty( $options['custom_block_message'] ) ? (string) $options['custom_block_message'] : '';
+		$client_ip  = (string) self::get_client_ip();
 		$time_str   = gmdate( 'Y-m-d H:i:s' ) . ' UTC';
 
 		?>
@@ -733,33 +826,33 @@ class Waffers_Firewall {
 </head>
 <body>
 	<div class="card">
-		<div class="badge">SECURITY INTERVENTION</div>
-		<h1>403 Forbidden: Request Blocked</h1>
-		<p>Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by <strong>Waffers Web Application Firewall</strong>.</p>
+		<div class="badge"><?php esc_html_e( 'SECURITY INTERVENTION', 'waffers-the-layer-that-protects-you' ); ?></div>
+		<h1><?php esc_html_e( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ); ?></h1>
+		<p><?php esc_html_e( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers-the-layer-that-protects-you' ); ?></p>
 		<?php if ( ! empty( $custom_msg ) ) : ?>
-			<p><?php echo $custom_msg; ?></p>
+			<p><?php echo esc_html( $custom_msg ); ?></p>
 		<?php endif; ?>
 		<div class="details">
 			<div class="detail-row">
-				<span class="label">Incident ID:</span>
-				<span class="value"><?php echo self::safe_esc( $incident_id ); ?></span>
+				<span class="label"><?php esc_html_e( 'Incident ID:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="value"><?php echo esc_html( $incident_id ); ?></span>
 			</div>
 			<div class="detail-row">
-				<span class="label">Detection Rule:</span>
-				<span class="value"><?php echo self::safe_esc( $title ); ?> (<?php echo self::safe_esc( $cve ); ?>)</span>
+				<span class="label"><?php esc_html_e( 'Detection Rule:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="value"><?php echo esc_html( $title ); ?> (<?php echo esc_html( $cve ); ?>)</span>
 			</div>
 			<div class="detail-row">
-				<span class="label">Client IP:</span>
-				<span class="value"><?php echo $client_ip; ?></span>
+				<span class="label"><?php esc_html_e( 'Client IP:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="value"><?php echo esc_html( $client_ip ); ?></span>
 			</div>
 			<div class="detail-row">
-				<span class="label">Timestamp:</span>
-				<span class="value"><?php echo self::safe_esc( $time_str ); ?></span>
+				<span class="label"><?php esc_html_e( 'Timestamp:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="value"><?php echo esc_html( $time_str ); ?></span>
 			</div>
 		</div>
 		<div class="footer">
-			<span class="brand">Waffers — The layer that protects you</span>
-			<span>Secured by Waffers</span>
+			<span class="brand"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ); ?></span>
+			<span><?php esc_html_e( 'Secured by Waffers', 'waffers-the-layer-that-protects-you' ); ?></span>
 		</div>
 	</div>
 </body>
@@ -829,16 +922,28 @@ class Waffers_Firewall {
 		);
 
 		foreach ( $headers as $header ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 			if ( ! empty( $_SERVER[ $header ] ) ) {
-				$ip_list = explode( ',', (string) $_SERVER[ $header ] );
-				$ip      = trim( $ip_list[0] );
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+				$raw_header = sanitize_text_field( wp_unslash( (string) $_SERVER[ $header ] ) );
+				$ip_list    = explode( ',', $raw_header );
+				$ip         = trim( $ip_list[0] );
 				if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
 					return $ip;
 				}
 			}
 		}
 
-		return isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : '127.0.0.1';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		if ( isset( $_SERVER['REMOTE_ADDR'] ) ) {
+			// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+			$ip = sanitize_text_field( wp_unslash( (string) $_SERVER['REMOTE_ADDR'] ) );
+			if ( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+				return $ip;
+			}
+		}
+
+		return '127.0.0.1';
 	}
 
 	/**
@@ -877,7 +982,8 @@ class Waffers_Firewall {
 	 * @return bool
 	 */
 	protected static function is_path_excluded( $exclusions ) {
-		$uri = isset( $_SERVER['REQUEST_URI'] ) ? (string) $_SERVER['REQUEST_URI'] : '';
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
+		$uri = isset( $_SERVER['REQUEST_URI'] ) ? sanitize_text_field( wp_unslash( (string) $_SERVER['REQUEST_URI'] ) ) : '';
 		if ( empty( $uri ) ) {
 			return false;
 		}

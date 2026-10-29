@@ -316,8 +316,11 @@ class Waffers_Server_Config {
 		$cleaned = trim( $existing );
 
 		if ( empty( $cleaned ) ) {
-			@unlink( $path );
+			if ( function_exists( 'wp_delete_file' ) ) {
+				wp_delete_file( $path );
+			}
 		} else {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 			@file_put_contents( $path, $cleaned, LOCK_EX );
 		}
 
@@ -335,7 +338,12 @@ class Waffers_Server_Config {
 	public static function install_mu_loader() {
 		$mu_dir = defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : WP_CONTENT_DIR . '/mu-plugins';
 		if ( ! is_dir( $mu_dir ) ) {
-			if ( ! @mkdir( $mu_dir, 0755, true ) ) {
+			if ( function_exists( 'wp_mkdir_p' ) ) {
+				$made = wp_mkdir_p( $mu_dir );
+			} else {
+				$made = @mkdir( $mu_dir, 0755, true );
+			}
+			if ( ! $made ) {
 				return array(
 					'success' => false,
 					'message' => __( 'Could not create wp-content/mu-plugins directory. Check folder permissions.', 'waffers-the-layer-that-protects-you' ),
@@ -378,7 +386,9 @@ class Waffers_Server_Config {
 		// Also clean up legacy mu loader file if present
 		$legacy_file = self::get_legacy_mu_loader_path();
 		if ( file_exists( $legacy_file ) && $legacy_file !== $target_file ) {
-			@unlink( $legacy_file );
+			if ( function_exists( 'wp_delete_file' ) ) {
+				wp_delete_file( $legacy_file );
+			}
 		}
 
 		return array(
@@ -395,7 +405,13 @@ class Waffers_Server_Config {
 	public static function remove_mu_loader() {
 		$target_file = self::get_mu_loader_path();
 		if ( file_exists( $target_file ) ) {
-			if ( ! @unlink( $target_file ) ) {
+			if ( function_exists( 'wp_delete_file' ) ) {
+				$deleted = wp_delete_file( $target_file );
+			} else {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
+				$deleted = @unlink( $target_file );
+			}
+			if ( ! $deleted ) {
 				return array(
 					'success' => false,
 					'message' => __( 'Failed to delete early loader from wp-content/mu-plugins/.', 'waffers-the-layer-that-protects-you' ),
@@ -405,7 +421,9 @@ class Waffers_Server_Config {
 
 		$legacy_file = self::get_legacy_mu_loader_path();
 		if ( file_exists( $legacy_file ) ) {
-			@unlink( $legacy_file );
+			if ( function_exists( 'wp_delete_file' ) ) {
+				wp_delete_file( $legacy_file );
+			}
 		}
 
 		return array(

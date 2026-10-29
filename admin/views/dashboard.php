@@ -106,31 +106,31 @@ if ( ! defined( 'ABSPATH' ) ) {
 					</tr>
 				</thead>
 				<tbody>
-					<?php foreach ( $scan_results['items'] as $key => $item ) : ?>
+					<?php foreach ( $scan_results['items'] as $waffers_key => $waffers_item ) : ?>
 						<?php
-						$row_class   = ( 0 === $item['penalty'] ) ? 'row-pass' : ( $item['penalty'] > 15 ? 'row-fail' : 'row-warn' );
-						$badge_class = ( 0 === $item['penalty'] ) ? 'status-pill-good' : ( $item['penalty'] > 15 ? 'status-pill-danger' : 'status-pill-warn' );
+						$waffers_row_class   = ( 0 === $waffers_item['penalty'] ) ? 'row-pass' : ( $waffers_item['penalty'] > 15 ? 'row-fail' : 'row-warn' );
+						$waffers_badge_class = ( 0 === $waffers_item['penalty'] ) ? 'status-pill-good' : ( $waffers_item['penalty'] > 15 ? 'status-pill-danger' : 'status-pill-warn' );
 						?>
-						<tr class="<?php echo esc_attr( $row_class ); ?>">
+						<tr class="<?php echo esc_attr( $waffers_row_class ); ?>">
 							<td>
-								<strong><?php echo esc_html( $item['title'] ); ?></strong>
+								<strong><?php echo esc_html( $waffers_item['title'] ); ?></strong>
 							</td>
 							<td>
-								<span class="status-pill <?php echo esc_attr( $badge_class ); ?>">
-									<?php echo esc_html( $item['status'] ); ?>
+								<span class="status-pill <?php echo esc_attr( $waffers_badge_class ); ?>">
+									<?php echo esc_html( $waffers_item['status'] ); ?>
 								</span>
 							</td>
 							<td>
-								<span class="severity-tag"><?php echo esc_html( $item['severity'] ); ?></span>
+								<span class="severity-tag"><?php echo esc_html( $waffers_item['severity'] ); ?></span>
 							</td>
 							<td>
-								<p class="audit-desc"><?php echo esc_html( $item['description'] ); ?></p>
+								<p class="audit-desc"><?php echo esc_html( $waffers_item['description'] ); ?></p>
 								<div class="audit-remedy">
-									<strong><?php esc_html_e( 'Recommendation:', 'waffers-the-layer-that-protects-you' ); ?></strong> <?php echo esc_html( $item['recommendation'] ); ?>
+									<strong><?php esc_html_e( 'Recommendation:', 'waffers-the-layer-that-protects-you' ); ?></strong> <?php echo esc_html( $waffers_item['recommendation'] ); ?>
 								</div>
 							</td>
 							<td>
-								<?php if ( in_array( $key, array( 'upload_progress', 'early_waf', 'info_leaks', 'allow_url_include' ), true ) ) : ?>
+								<?php if ( in_array( $waffers_key, array( 'upload_progress', 'early_waf', 'info_leaks', 'allow_url_include' ), true ) ) : ?>
 									<a href="<?php echo esc_url( admin_url( 'admin.php?page=waffers-hardening' ) ); ?>" class="button button-small button-primary">
 										<?php esc_html_e( 'Hardening Tools', 'waffers-the-layer-that-protects-you' ); ?>
 									</a>
@@ -153,10 +153,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="php-armor-card">
 				<h3><?php esc_html_e( 'Blocks by Vulnerability Type (Last 24h)', 'waffers-the-layer-that-protects-you' ); ?></h3>
 				<ul class="threat-breakdown">
-					<?php foreach ( $stats['by_cve'] as $stat ) : ?>
+					<?php foreach ( $stats['by_cve'] as $waffers_stat ) : ?>
 						<li>
-							<span class="threat-name"><?php echo esc_html( $stat['cve_reference'] ); ?></span>
-							<span class="threat-count badge-pill"><?php echo esc_html( $stat['count'] ); ?> attacks</span>
+							<span class="threat-name"><?php echo esc_html( $waffers_stat['cve_reference'] ); ?></span>
+							<span class="threat-count badge-pill"><?php echo esc_html( $waffers_stat['count'] ); ?> attacks</span>
 						</li>
 					<?php endforeach; ?>
 				</ul>
@@ -165,10 +165,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<div class="php-armor-card">
 				<h3><?php esc_html_e( 'Top Attacker IPs (Last 24h)', 'waffers-the-layer-that-protects-you' ); ?></h3>
 				<ul class="threat-breakdown">
-					<?php foreach ( $stats['top_ips'] as $ip_stat ) : ?>
+					<?php foreach ( $stats['top_ips'] as $waffers_ip_stat ) : ?>
 						<li>
-							<span class="threat-name code-font"><?php echo esc_html( $ip_stat['ip_address'] ); ?></span>
-							<span class="threat-count badge-pill"><?php echo esc_html( $ip_stat['count'] ); ?> hits</span>
+							<span class="threat-name code-font"><?php echo esc_html( $waffers_ip_stat['ip_address'] ); ?></span>
+							<span class="threat-count badge-pill"><?php echo esc_html( $waffers_ip_stat['count'] ); ?> hits</span>
 						</li>
 					<?php endforeach; ?>
 				</ul>

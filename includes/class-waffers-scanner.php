@@ -23,6 +23,7 @@ class Waffers_Scanner {
 		$php_version = PHP_VERSION;
 		$sapi        = php_sapi_name();
 		$is_windows  = ( strtoupper( substr( PHP_OS, 0, 3 ) ) === 'WIN' );
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		$server_soft = isset( $_SERVER['SERVER_SOFTWARE'] ) ? sanitize_text_field( wp_unslash( $_SERVER['SERVER_SOFTWARE'] ) ) : 'Unknown';
 
 		$results = array(

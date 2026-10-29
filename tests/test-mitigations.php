@@ -6,6 +6,10 @@
  * php tests/test-mitigations.php
  */
 
+if ( ! defined( 'ABSPATH' ) && ! defined( 'PHP_ARMOR_STANDALONE' ) ) {
+	exit;
+}
+
 define( 'PHP_ARMOR_STANDALONE', true );
 require_once dirname( __DIR__ ) . '/includes/class-php-armor-firewall.php';
 

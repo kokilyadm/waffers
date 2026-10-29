@@ -183,8 +183,11 @@ class Waffers_Admin {
 	 * Render Attack Logs Page.
 	 */
 	public function render_logs_page() {
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$search = isset( $_GET['s'] ) ? sanitize_text_field( wp_unslash( $_GET['s'] ) ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$cve    = isset( $_GET['cve'] ) ? sanitize_text_field( wp_unslash( $_GET['cve'] ) ) : '';
+		// phpcs:ignore WordPress.Security.NonceVerification.Recommended
 		$page   = isset( $_GET['paged'] ) ? max( 1, (int) $_GET['paged'] ) : 1;
 
 		$log_data = Waffers_Logger::get_logs( array(
@@ -310,7 +313,9 @@ class Waffers_Admin {
 					) );
 					return;
 				}
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$_SERVER['QUERY_STRING'] = '%ad-d+auto_prepend_file=php://input';
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$_SERVER['REQUEST_URI']  = '/index.php?' . $_SERVER['QUERY_STRING'];
 				$threat = Waffers_Firewall::detect_cve_2024_4577();
 				if ( $threat ) {
@@ -329,11 +334,13 @@ class Waffers_Admin {
 					) );
 					return;
 				}
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$_SERVER['REQUEST_METHOD'] = 'POST';
 				$prog_key = ini_get( 'session.upload_progress.name' );
 				if ( empty( $prog_key ) ) {
 					$prog_key = 'PHP_SESSION_UPLOAD_PROGRESS';
 				}
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$_POST[ $prog_key ] = '<?php phpinfo(); ?>_malicious_session_struct';
 				$threat = Waffers_Firewall::detect_php2shell();
 				if ( $threat ) {
@@ -352,6 +359,7 @@ class Waffers_Admin {
 					) );
 					return;
 				}
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$_GET['filter_test'] = 'php://filter/convert.iconv.ISO-2022-CN-EXT.UTF-8/resource=data:text/plain,test';
 				$threat = Waffers_Firewall::detect_stream_wrapper_exploits();
 				if ( $threat ) {
@@ -370,6 +378,7 @@ class Waffers_Admin {
 					) );
 					return;
 				}
+				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 				$_GET['payload'] = 'O:14:"App\\Vulnerable":1:{s:4:"cmd";s:7:"whoami";}';
 				$threat = Waffers_Firewall::detect_object_injection( true );
 				if ( $threat ) {
@@ -384,8 +393,11 @@ class Waffers_Admin {
 		}
 
 		// Restore superglobals
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		$_SERVER = $backup_server;
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		$_POST   = $backup_post;
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
 		$_GET    = $backup_get;
 
 		if ( $intercepted ) {

@@ -90,34 +90,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 						</tr>
 					</thead>
 					<tbody>
-						<?php foreach ( $log_data['logs'] as $log ) : ?>
+						<?php foreach ( $log_data['logs'] as $waffers_log ) : ?>
 							<tr>
-								<td class="code-font"><?php echo esc_html( $log['timestamp'] ); ?></td>
-								<td><span class="incident-badge"><?php echo esc_html( $log['incident_id'] ); ?></span></td>
-								<td class="code-font"><?php echo esc_html( $log['ip_address'] ); ?></td>
+								<td class="code-font"><?php echo esc_html( $waffers_log['timestamp'] ); ?></td>
+								<td><span class="incident-badge"><?php echo esc_html( $waffers_log['incident_id'] ); ?></span></td>
+								<td class="code-font"><?php echo esc_html( $waffers_log['ip_address'] ); ?></td>
 								<td>
-									<span class="cve-pill"><?php echo esc_html( $log['cve_reference'] ); ?></span>
+									<span class="cve-pill"><?php echo esc_html( $waffers_log['cve_reference'] ); ?></span>
 								</td>
 								<td>
-									<strong><?php echo esc_html( $log['attack_type'] ); ?></strong>
-									<?php if ( ! empty( $log['rule_triggered'] ) ) : ?>
-										<div class="sub-rule-text"><?php echo esc_html( $log['rule_triggered'] ); ?></div>
+									<strong><?php echo esc_html( $waffers_log['attack_type'] ); ?></strong>
+									<?php if ( ! empty( $waffers_log['rule_triggered'] ) ) : ?>
+										<div class="sub-rule-text"><?php echo esc_html( $waffers_log['rule_triggered'] ); ?></div>
 									<?php endif; ?>
 								</td>
-								<td><span class="method-tag"><?php echo esc_html( $log['request_method'] ); ?></span></td>
-								<td class="uri-cell code-font" title="<?php echo esc_attr( $log['request_uri'] ); ?>">
-									<?php echo esc_html( substr( $log['request_uri'], 0, 45 ) . ( strlen( $log['request_uri'] ) > 45 ? '...' : '' ) ); ?>
+								<td><span class="method-tag"><?php echo esc_html( $waffers_log['request_method'] ); ?></span></td>
+								<td class="uri-cell code-font" title="<?php echo esc_attr( $waffers_log['request_uri'] ); ?>">
+									<?php echo esc_html( substr( $waffers_log['request_uri'], 0, 45 ) . ( strlen( $waffers_log['request_uri'] ) > 45 ? '...' : '' ) ); ?>
 								</td>
 								<td>
-									<span class="action-tag <?php echo ( 'blocked' === $log['action_taken'] ) ? 'tag-blocked' : 'tag-simulated'; ?>">
-										<?php echo esc_html( strtoupper( $log['action_taken'] ) ); ?>
+									<span class="action-tag <?php echo ( 'blocked' === $waffers_log['action_taken'] ) ? 'tag-blocked' : 'tag-simulated'; ?>">
+										<?php echo esc_html( strtoupper( $waffers_log['action_taken'] ) ); ?>
 									</span>
 								</td>
 								<td>
 									<button type="button" class="button button-small view-payload-btn"
-										data-incident="<?php echo esc_attr( $log['incident_id'] ); ?>"
-										data-payload="<?php echo esc_attr( $log['payload_sample'] ); ?>"
-										data-agent="<?php echo esc_attr( $log['user_agent'] ); ?>">
+										data-incident="<?php echo esc_attr( $waffers_log['incident_id'] ); ?>"
+										data-payload="<?php echo esc_attr( $waffers_log['payload_sample'] ); ?>"
+										data-agent="<?php echo esc_attr( $waffers_log['user_agent'] ); ?>">
 										<?php esc_html_e( 'View', 'waffers-the-layer-that-protects-you' ); ?>
 									</button>
 								</td>
@@ -132,14 +132,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<div class="tablenav">
 					<div class="tablenav-pages">
 						<?php
-						echo paginate_links( array(
-							'base'      => add_query_arg( 'paged', '%#%' ),
-							'format'    => '',
-							'prev_text' => '&laquo;',
-							'next_text' => '&raquo;',
-							'total'     => $log_data['total_pages'],
-							'current'   => $log_data['page'],
-						) );
+						echo wp_kses_post(
+							paginate_links( array(
+								'base'      => add_query_arg( 'paged', '%#%' ),
+								'format'    => '',
+								'prev_text' => '&laquo;',
+								'next_text' => '&raquo;',
+								'total'     => $log_data['total_pages'],
+								'current'   => $log_data['page'],
+							) )
+						);
 						?>
 					</div>
 				</div>

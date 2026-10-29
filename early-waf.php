@@ -11,30 +11,30 @@
  * @package Waffers
  */
 
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 if ( defined( 'WAFFERS_EARLY_LOADED' ) || defined( 'PHP_ARMOR_EARLY_LOADED' ) ) {
 	return;
 }
 define( 'WAFFERS_EARLY_LOADED', true );
 define( 'PHP_ARMOR_EARLY_LOADED', true );
 
-if ( ! defined( 'ABSPATH' ) ) {
-	define( 'ABSPATH', dirname( __DIR__ ) . '/' );
-}
-
-$plugin_dir = __DIR__;
+$waffers_plugin_dir = __DIR__;
 
 // Load real logger first
-if ( file_exists( $plugin_dir . '/includes/class-waffers-logger.php' ) ) {
-	require_once $plugin_dir . '/includes/class-waffers-logger.php';
-} elseif ( file_exists( $plugin_dir . '/includes/class-php-armor-logger.php' ) ) {
-	require_once $plugin_dir . '/includes/class-php-armor-logger.php';
+if ( file_exists( $waffers_plugin_dir . '/includes/class-waffers-logger.php' ) ) {
+	require_once $waffers_plugin_dir . '/includes/class-waffers-logger.php';
+} elseif ( file_exists( $waffers_plugin_dir . '/includes/class-php-armor-logger.php' ) ) {
+	require_once $waffers_plugin_dir . '/includes/class-php-armor-logger.php';
 }
 
 // Load firewall engine
-if ( file_exists( $plugin_dir . '/includes/class-waffers-firewall.php' ) ) {
-	require_once $plugin_dir . '/includes/class-waffers-firewall.php';
-} elseif ( file_exists( $plugin_dir . '/includes/class-php-armor-firewall.php' ) ) {
-	require_once $plugin_dir . '/includes/class-php-armor-firewall.php';
+if ( file_exists( $waffers_plugin_dir . '/includes/class-waffers-firewall.php' ) ) {
+	require_once $waffers_plugin_dir . '/includes/class-waffers-firewall.php';
+} elseif ( file_exists( $waffers_plugin_dir . '/includes/class-php-armor-firewall.php' ) ) {
+	require_once $waffers_plugin_dir . '/includes/class-php-armor-firewall.php';
 }
 
 if ( class_exists( 'Waffers_Firewall' ) || class_exists( 'PHP_Armor_Firewall' ) ) {

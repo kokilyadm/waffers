@@ -188,7 +188,12 @@ class Waffers_Core {
 		if ( function_exists( 'wp_upload_dir' ) ) {
 			$upload = wp_upload_dir();
 			if ( ! empty( $upload['basedir'] ) && file_exists( $upload['basedir'] . '/waffers-config.json' ) ) {
-				@unlink( $upload['basedir'] . '/waffers-config.json' );
+				if ( function_exists( 'wp_delete_file' ) ) {
+					wp_delete_file( $upload['basedir'] . '/waffers-config.json' );
+				} else {
+					// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
+					@unlink( $upload['basedir'] . '/waffers-config.json' );
+				}
 			}
 		}
 	}
@@ -202,6 +207,7 @@ class Waffers_Core {
 		if ( function_exists( 'wp_upload_dir' ) ) {
 			$upload = wp_upload_dir();
 			if ( ! empty( $upload['basedir'] ) && is_writable( $upload['basedir'] ) ) {
+				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
 				@file_put_contents( $upload['basedir'] . '/waffers-config.json', wp_json_encode( $options ), LOCK_EX );
 			}
 		}
