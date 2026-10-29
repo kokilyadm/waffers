@@ -65,9 +65,6 @@ class Waffers_Core {
 	 * Initialize WordPress action & filter hooks.
 	 */
 	private function init_hooks() {
-		// Load textdomain for i18n
-		add_action( 'init', array( $this, 'load_textdomain' ) );
-
 		// Run firewall early if not already executed by early-waf.php
 		if ( ! defined( 'WAFFERS_EARLY_LOADED' ) && ! defined( 'PHP_ARMOR_EARLY_LOADED' ) ) {
 			add_action( 'plugins_loaded', array( $this, 'run_firewall' ), -9999 );
@@ -85,17 +82,6 @@ class Waffers_Core {
 		// Handle CSV export actions (both current and legacy hooks)
 		add_action( 'admin_post_waffers_export_csv', array( 'Waffers_Logger', 'export_csv' ) );
 		add_action( 'admin_post_php_armor_export_csv', array( 'Waffers_Logger', 'export_csv' ) );
-	}
-
-	/**
-	 * Load plugin translation files.
-	 */
-	public function load_textdomain() {
-		load_plugin_textdomain(
-			'waffers-the-layer-that-protects-you',
-			false,
-			dirname( plugin_basename( WAFFERS_FILE ) ) . '/languages'
-		);
 	}
 
 	/**
@@ -131,18 +117,18 @@ class Waffers_Core {
 			'<p>%s</p>' .
 			'<h3>%s</h3>' .
 			'<p>%s</p>',
-			esc_html__( 'Waffers Web Application Firewall', 'waffers-the-layer-that-protects-you' ),
-			esc_html__( 'Waffers operates locally on this web server to protect this website against PHP engine vulnerabilities, malicious requests, and remote exploit attempts.', 'waffers-the-layer-that-protects-you' ),
-			esc_html__( 'What Personal Data is Collected and Why', 'waffers-the-layer-that-protects-you' ),
-			esc_html__( 'When an HTTP request triggers a security defense rule, Waffers records the visitor’s IP address, User-Agent, request timestamp, target URI, and a sample of the intercepted attack payload in the local site database. This information is processed strictly under legitimate interest to prevent unauthorized system access, block exploits, and maintain site security.', 'waffers-the-layer-that-protects-you' ),
-			esc_html__( 'Data Retention & Deletion', 'waffers-the-layer-that-protects-you' ),
-			esc_html__( 'Recorded security logs are automatically pruned after 30 days or retained up to a maximum of 10,000 entries. Administrators may also clear all logged events at any time via the Waffers Attack Logs dashboard.', 'waffers-the-layer-that-protects-you' ),
-			esc_html__( 'Third-Party Sharing', 'waffers-the-layer-that-protects-you' ),
-			esc_html__( 'Waffers is a 100% self-hosted, standalone security firewall. No visitor data, IP addresses, or security telemetry are ever transmitted to external servers or third-party organizations.', 'waffers-the-layer-that-protects-you' )
+			esc_html__( 'Waffers Web Application Firewall', 'waffers' ),
+			esc_html__( 'Waffers operates locally on this web server to protect this website against PHP engine vulnerabilities, malicious requests, and remote exploit attempts.', 'waffers' ),
+			esc_html__( 'What Personal Data is Collected and Why', 'waffers' ),
+			esc_html__( 'When an HTTP request triggers a security defense rule, Waffers records the visitor’s IP address, User-Agent, request timestamp, target URI, and a sample of the intercepted attack payload in the local site database. This information is processed strictly under legitimate interest to prevent unauthorized system access, block exploits, and maintain site security.', 'waffers' ),
+			esc_html__( 'Data Retention & Deletion', 'waffers' ),
+			esc_html__( 'Recorded security logs are automatically pruned after 30 days or retained up to a maximum of 10,000 entries. Administrators may also clear all logged events at any time via the Waffers Attack Logs dashboard.', 'waffers' ),
+			esc_html__( 'Third-Party Sharing', 'waffers' ),
+			esc_html__( 'Waffers is a 100% self-hosted, standalone security firewall. No visitor data, IP addresses, or security telemetry are ever transmitted to external servers or third-party organizations.', 'waffers' )
 		);
 
 		wp_add_privacy_policy_content(
-			__( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ),
+			__( 'Waffers — The layer that protects you', 'waffers' ),
 			wp_kses_post( wpautop( $content, false ) )
 		);
 	}
@@ -206,9 +192,10 @@ class Waffers_Core {
 	public static function sync_standalone_config( $options ) {
 		if ( function_exists( 'wp_upload_dir' ) ) {
 			$upload = wp_upload_dir();
-			if ( ! empty( $upload['basedir'] ) && is_writable( $upload['basedir'] ) ) {
+			$upload_dir = ! empty( $upload['basedir'] ) ? $upload['basedir'] : '';
+			if ( ! empty( $upload_dir ) && wp_is_writable( $upload_dir ) ) {
 				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-				@file_put_contents( $upload['basedir'] . '/waffers-config.json', wp_json_encode( $options ), LOCK_EX );
+				@file_put_contents( $upload_dir . '/waffers-config.json', wp_json_encode( $options ), LOCK_EX );
 			}
 		}
 	}

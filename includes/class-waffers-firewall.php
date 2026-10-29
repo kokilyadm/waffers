@@ -12,73 +12,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-if ( ! function_exists( 'wp_unslash' ) ) {
-	/**
-	 * Polyfill for wp_unslash outside WordPress runtime.
-	 *
-	 * @param mixed $value Value to unslash.
-	 * @return mixed
-	 */
-	function wp_unslash( $value ) {
-		return is_array( $value ) ? array_map( 'wp_unslash', $value ) : stripslashes( (string) $value );
-	}
-}
-if ( ! function_exists( 'esc_html' ) ) {
-	/**
-	 * Polyfill for esc_html outside WordPress runtime.
-	 *
-	 * @param string $text Text to escape.
-	 * @return string
-	 */
-	function esc_html( $text ) {
-		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
-	}
-}
-if ( ! function_exists( 'esc_attr' ) ) {
-	/**
-	 * Polyfill for esc_attr outside WordPress runtime.
-	 *
-	 * @param string $text Text to escape.
-	 * @return string
-	 */
-	function esc_attr( $text ) {
-		return htmlspecialchars( (string) $text, ENT_QUOTES, 'UTF-8' );
-	}
-}
-if ( ! function_exists( 'esc_html_e' ) ) {
-	/**
-	 * Polyfill for esc_html_e outside WordPress runtime.
-	 *
-	 * @param string $text Text to escape.
-	 * @param string $domain Text domain.
-	 */
-	function esc_html_e( $text, $domain = 'default' ) {
-		echo esc_html( $text );
-	}
-}
-if ( ! function_exists( 'sanitize_text_field' ) ) {
-	/**
-	 * Polyfill for sanitize_text_field outside WordPress runtime.
-	 *
-	 * @param string $str Text to sanitize.
-	 * @return string
-	 */
-	function sanitize_text_field( $str ) {
-		return is_string( $str ) ? trim( wp_strip_all_tags( $str ) ) : '';
-	}
-}
-if ( ! function_exists( 'wp_strip_all_tags' ) ) {
-	/**
-	 * Polyfill for wp_strip_all_tags outside WordPress runtime.
-	 *
-	 * @param string $str String with tags.
-	 * @return string
-	 */
-	function wp_strip_all_tags( $str ) {
-		return is_string( $str ) ? trim( preg_replace( '@<[\/\!]*?[^<>]*?>@si', '', $str ) ) : '';
-	}
-}
-
 class Waffers_Firewall {
 
 	/**
@@ -357,6 +290,7 @@ class Waffers_Firewall {
 
 			// If unauthenticated or no actual files uploaded in $_FILES, this is an anomalous progress probe
 			$is_logged_in = function_exists( 'is_user_logged_in' ) && is_user_logged_in();
+			// phpcs:ignore WordPress.Security.NonceVerification.Missing
 			if ( ! $is_logged_in && empty( $_FILES ) ) {
 				// Disarm parameter: unset it so PHP engine will not initiate session upload tracking structures
 				// phpcs:ignore WordPress.Security.NonceVerification.Missing
@@ -651,7 +585,7 @@ class Waffers_Firewall {
 		$options = self::get_options();
 		$mode    = isset( $options['block_mode'] ) ? $options['block_mode'] : 'block';
 
-		$rand_val    = function_exists( 'wp_rand' ) ? wp_rand() : rand();
+		$rand_val    = function_exists( 'wp_rand' ) ? wp_rand() : 12345;
 		$incident_id = strtoupper( substr( md5( uniqid( (string) $rand_val, true ) ), 0, 10 ) );
 		$client_ip   = self::get_client_ip();
 		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
@@ -826,33 +760,33 @@ class Waffers_Firewall {
 </head>
 <body>
 	<div class="card">
-		<div class="badge"><?php esc_html_e( 'SECURITY INTERVENTION', 'waffers-the-layer-that-protects-you' ); ?></div>
-		<h1><?php esc_html_e( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ); ?></h1>
-		<p><?php esc_html_e( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers-the-layer-that-protects-you' ); ?></p>
+		<div class="badge"><?php esc_html_e( 'SECURITY INTERVENTION', 'waffers' ); ?></div>
+		<h1><?php esc_html_e( '403 Forbidden: Request Blocked', 'waffers' ); ?></h1>
+		<p><?php esc_html_e( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers' ); ?></p>
 		<?php if ( ! empty( $custom_msg ) ) : ?>
 			<p><?php echo esc_html( $custom_msg ); ?></p>
 		<?php endif; ?>
 		<div class="details">
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Incident ID:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Incident ID:', 'waffers' ); ?></span>
 				<span class="value"><?php echo esc_html( $incident_id ); ?></span>
 			</div>
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Detection Rule:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Detection Rule:', 'waffers' ); ?></span>
 				<span class="value"><?php echo esc_html( $title ); ?> (<?php echo esc_html( $cve ); ?>)</span>
 			</div>
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Client IP:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Client IP:', 'waffers' ); ?></span>
 				<span class="value"><?php echo esc_html( $client_ip ); ?></span>
 			</div>
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Timestamp:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Timestamp:', 'waffers' ); ?></span>
 				<span class="value"><?php echo esc_html( $time_str ); ?></span>
 			</div>
 		</div>
 		<div class="footer">
-			<span class="brand"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ); ?></span>
-			<span><?php esc_html_e( 'Secured by Waffers', 'waffers-the-layer-that-protects-you' ); ?></span>
+			<span class="brand"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers' ); ?></span>
+			<span><?php esc_html_e( 'Secured by Waffers', 'waffers' ); ?></span>
 		</div>
 	</div>
 </body>

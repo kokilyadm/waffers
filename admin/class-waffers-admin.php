@@ -37,11 +37,11 @@ class Waffers_Admin {
 	 * Register Admin Menu Pages.
 	 */
 	public function register_admin_menu() {
-		$main_slug = 'waffers-the-layer-that-protects-you';
+		$main_slug = 'waffers';
 
 		add_menu_page(
-			__( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ),
-			__( 'Waffers', 'waffers-the-layer-that-protects-you' ),
+			__( 'Waffers — The layer that protects you', 'waffers' ),
+			__( 'Waffers', 'waffers' ),
 			'manage_options',
 			$main_slug,
 			array( $this, 'render_dashboard_page' ),
@@ -51,8 +51,8 @@ class Waffers_Admin {
 
 		add_submenu_page(
 			$main_slug,
-			__( 'Waffers — Security Dashboard & Health Scan', 'waffers-the-layer-that-protects-you' ),
-			__( 'Dashboard & Audit', 'waffers-the-layer-that-protects-you' ),
+			__( 'Waffers — Security Dashboard & Health Scan', 'waffers' ),
+			__( 'Dashboard & Audit', 'waffers' ),
 			'manage_options',
 			$main_slug,
 			array( $this, 'render_dashboard_page' )
@@ -60,8 +60,8 @@ class Waffers_Admin {
 
 		add_submenu_page(
 			$main_slug,
-			__( 'Waffers — Firewall Protection Rules', 'waffers-the-layer-that-protects-you' ),
-			__( 'Firewall Rules', 'waffers-the-layer-that-protects-you' ),
+			__( 'Waffers — Firewall Protection Rules', 'waffers' ),
+			__( 'Firewall Rules', 'waffers' ),
 			'manage_options',
 			'waffers-rules',
 			array( $this, 'render_rules_page' )
@@ -69,8 +69,8 @@ class Waffers_Admin {
 
 		add_submenu_page(
 			$main_slug,
-			__( 'Waffers — Server-Level Hardening (.user.ini / .htaccess)', 'waffers-the-layer-that-protects-you' ),
-			__( 'Server Hardening', 'waffers-the-layer-that-protects-you' ),
+			__( 'Waffers — Server-Level Hardening (.user.ini / .htaccess)', 'waffers' ),
+			__( 'Server Hardening', 'waffers' ),
 			'manage_options',
 			'waffers-hardening',
 			array( $this, 'render_hardening_page' )
@@ -78,8 +78,8 @@ class Waffers_Admin {
 
 		add_submenu_page(
 			$main_slug,
-			__( 'Waffers — Live Attack & Threat Logs', 'waffers-the-layer-that-protects-you' ),
-			__( 'Attack Logs', 'waffers-the-layer-that-protects-you' ),
+			__( 'Waffers — Live Attack & Threat Logs', 'waffers' ),
+			__( 'Attack Logs', 'waffers' ),
 			'manage_options',
 			'waffers-logs',
 			array( $this, 'render_logs_page' )
@@ -87,8 +87,8 @@ class Waffers_Admin {
 
 		add_submenu_page(
 			$main_slug,
-			__( 'Waffers — Exploit Simulation Console', 'waffers-the-layer-that-protects-you' ),
-			__( 'Exploit Simulator', 'waffers-the-layer-that-protects-you' ),
+			__( 'Waffers — Exploit Simulation Console', 'waffers' ),
+			__( 'Exploit Simulator', 'waffers' ),
 			'manage_options',
 			'waffers-simulator',
 			array( $this, 'render_simulator_page' )
@@ -120,7 +120,7 @@ class Waffers_Admin {
 	 * @param string $hook Admin page hook.
 	 */
 	public function enqueue_assets( $hook ) {
-		if ( strpos( $hook, 'waffers-the-layer-that-protects-you' ) === false && strpos( $hook, 'php-armor' ) === false ) {
+		if ( strpos( $hook, 'waffers' ) === false && strpos( $hook, 'php-armor' ) === false ) {
 			return;
 		}
 
@@ -212,11 +212,11 @@ class Waffers_Admin {
 	protected function verify_ajax_request() {
 		$nonce = isset( $_REQUEST['nonce'] ) ? sanitize_text_field( wp_unslash( $_REQUEST['nonce'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'waffers_admin_nonce' ) && ! wp_verify_nonce( $nonce, 'php_armor_admin_nonce' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Security verification failed.', 'waffers-the-layer-that-protects-you' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Security verification failed.', 'waffers' ) ) );
 		}
 
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Unauthorized user access.', 'waffers-the-layer-that-protects-you' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Unauthorized user access.', 'waffers' ) ) );
 		}
 	}
 
@@ -224,7 +224,11 @@ class Waffers_Admin {
 	 * AJAX: Save Settings.
 	 */
 	public function ajax_save_settings() {
-		$this->verify_ajax_request();
+		check_ajax_referer( 'waffers_admin_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Unauthorized user access.', 'waffers' ) ) );
+		}
 
 		$updated = array(
 			'enabled'                 => isset( $_POST['enabled'] ) ? 1 : 0,
@@ -245,19 +249,23 @@ class Waffers_Admin {
 		update_option( 'php_armor_options', $updated );
 		Waffers_Core::sync_standalone_config( $updated );
 
-		wp_send_json_success( array( 'message' => __( 'Waffers settings saved successfully.', 'waffers-the-layer-that-protects-you' ) ) );
+		wp_send_json_success( array( 'message' => __( 'Waffers settings saved successfully.', 'waffers' ) ) );
 	}
 
 	/**
 	 * AJAX: Apply or Remove Server Hardening.
 	 */
 	public function ajax_apply_hardening() {
-		$this->verify_ajax_request();
+		check_ajax_referer( 'waffers_admin_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Unauthorized user access.', 'waffers' ) ) );
+		}
 
 		$target = isset( $_POST['target'] ) ? sanitize_text_field( wp_unslash( $_POST['target'] ) ) : '';
 		$action = isset( $_POST['hardening_action'] ) ? sanitize_text_field( wp_unslash( $_POST['hardening_action'] ) ) : 'apply';
 
-		$result = array( 'success' => false, 'message' => __( 'Unknown hardening target requested.', 'waffers-the-layer-that-protects-you' ) );
+		$result = array( 'success' => false, 'message' => __( 'Unknown hardening target requested.', 'waffers' ) );
 
 		if ( 'htaccess' === $target ) {
 			$result = ( 'apply' === $action ) ? Waffers_Server_Config::apply_htaccess() : Waffers_Server_Config::remove_htaccess();
@@ -278,17 +286,25 @@ class Waffers_Admin {
 	 * AJAX: Clear Attack Logs.
 	 */
 	public function ajax_clear_logs() {
-		$this->verify_ajax_request();
+		check_ajax_referer( 'waffers_admin_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Unauthorized user access.', 'waffers' ) ) );
+		}
 
 		Waffers_Logger::clear_logs();
-		wp_send_json_success( array( 'message' => __( 'All recorded attack logs have been truncated.', 'waffers-the-layer-that-protects-you' ) ) );
+		wp_send_json_success( array( 'message' => __( 'All recorded attack logs have been truncated.', 'waffers' ) ) );
 	}
 
 	/**
 	 * AJAX: Run Safe Exploit Simulation.
 	 */
 	public function ajax_run_simulation() {
-		$this->verify_ajax_request();
+		check_ajax_referer( 'waffers_admin_nonce', 'nonce' );
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_send_json_error( array( 'message' => __( 'Unauthorized user access.', 'waffers' ) ) );
+		}
 
 		$test_type = isset( $_POST['test_type'] ) ? sanitize_text_field( wp_unslash( $_POST['test_type'] ) ) : '';
 		$options   = Waffers_Firewall::get_options();
@@ -304,19 +320,20 @@ class Waffers_Admin {
 
 		switch ( $test_type ) {
 			case 'cve_2024_4577':
-				$test_name = __( 'CVE-2024-4577 (Windows PHP-CGI Argument Injection probe with %ad soft-hyphen)', 'waffers-the-layer-that-protects-you' );
+				$test_name = __( 'CVE-2024-4577 (Windows PHP-CGI Argument Injection probe with %ad soft-hyphen)', 'waffers' );
 				if ( empty( $options['cve_2024_4577_shield'] ) ) {
 					wp_send_json_error( array(
 						'intercepted' => false,
 						'test'        => $test_name,
-						'message'     => __( 'The PHP-CGI Argument Injection shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers-the-layer-that-protects-you' ),
+						'message'     => __( 'The PHP-CGI Argument Injection shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers' ),
 					) );
 					return;
 				}
+				$sim_query = '%ad-d+auto_prepend_file=php://input';
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-				$_SERVER['QUERY_STRING'] = '%ad-d+auto_prepend_file=php://input';
+				$_SERVER['QUERY_STRING'] = $sim_query;
 				// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.InputNotSanitized, WordPress.Security.ValidatedSanitizedInput.MissingUnslash
-				$_SERVER['REQUEST_URI']  = '/index.php?' . $_SERVER['QUERY_STRING'];
+				$_SERVER['REQUEST_URI']  = '/index.php?' . $sim_query;
 				$threat = Waffers_Firewall::detect_cve_2024_4577();
 				if ( $threat ) {
 					$intercepted = true;
@@ -325,12 +342,12 @@ class Waffers_Admin {
 				break;
 
 			case 'php2shell':
-				$test_name = __( 'PHP2Shell (CVE-2026-109619 Multipart Session Upload Progress attack probe)', 'waffers-the-layer-that-protects-you' );
+				$test_name = __( 'PHP2Shell (CVE-2026-109619 Multipart Session Upload Progress attack probe)', 'waffers' );
 				if ( empty( $options['php2shell_shield'] ) ) {
 					wp_send_json_error( array(
 						'intercepted' => false,
 						'test'        => $test_name,
-						'message'     => __( 'The PHP2Shell shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers-the-layer-that-protects-you' ),
+						'message'     => __( 'The PHP2Shell shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers' ),
 					) );
 					return;
 				}
@@ -350,12 +367,12 @@ class Waffers_Admin {
 				break;
 
 			case 'cve_2024_2961':
-				$test_name = __( 'CVE-2024-2961 (iconv ISO-2022-CN-EXT heap overflow filter chain probe)', 'waffers-the-layer-that-protects-you' );
+				$test_name = __( 'CVE-2024-2961 (iconv ISO-2022-CN-EXT heap overflow filter chain probe)', 'waffers' );
 				if ( empty( $options['cve_2024_2961_shield'] ) ) {
 					wp_send_json_error( array(
 						'intercepted' => false,
 						'test'        => $test_name,
-						'message'     => __( 'The iconv / Stream Wrapper shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers-the-layer-that-protects-you' ),
+						'message'     => __( 'The iconv / Stream Wrapper shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers' ),
 					) );
 					return;
 				}
@@ -369,12 +386,12 @@ class Waffers_Admin {
 				break;
 
 			case 'object_injection':
-				$test_name = __( 'PHP Object Injection (CWE-502 Serialized Gadget Chain probe)', 'waffers-the-layer-that-protects-you' );
+				$test_name = __( 'PHP Object Injection (CWE-502 Serialized Gadget Chain probe)', 'waffers' );
 				if ( empty( $options['object_injection_shield'] ) ) {
 					wp_send_json_error( array(
 						'intercepted' => false,
 						'test'        => $test_name,
-						'message'     => __( 'The PHP Object Injection shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers-the-layer-that-protects-you' ),
+						'message'     => __( 'The PHP Object Injection shield is currently disabled in Firewall Rules. Please enable it and save settings before testing.', 'waffers' ),
 					) );
 					return;
 				}
@@ -388,7 +405,7 @@ class Waffers_Admin {
 				break;
 
 			default:
-				wp_send_json_error( array( 'message' => __( 'Invalid simulation type requested.', 'waffers-the-layer-that-protects-you' ) ) );
+				wp_send_json_error( array( 'message' => __( 'Invalid simulation type requested.', 'waffers' ) ) );
 				return;
 		}
 
@@ -407,13 +424,13 @@ class Waffers_Admin {
 				'rule'        => isset( $threat_data['rule'] ) ? $threat_data['rule'] : 'Matched',
 				'payload'     => isset( $threat_data['payload'] ) ? $threat_data['payload'] : '',
 				'source'      => isset( $threat_data['source'] ) ? $threat_data['source'] : '',
-				'message'     => __( 'Firewall successfully detected and neutralized the exploit payload!', 'waffers-the-layer-that-protects-you' ),
+				'message'     => __( 'Firewall successfully detected and neutralized the exploit payload!', 'waffers' ),
 			) );
 		} else {
 			wp_send_json_error( array(
 				'intercepted' => false,
 				'test'        => $test_name,
-				'message'     => __( 'Payload was not intercepted. Verify that this specific shield is enabled in Firewall Rules.', 'waffers-the-layer-that-protects-you' ),
+				'message'     => __( 'Payload was not intercepted. Verify that this specific shield is enabled in Firewall Rules.', 'waffers' ),
 			) );
 		}
 	}

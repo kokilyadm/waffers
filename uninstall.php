@@ -63,39 +63,41 @@ if ( ! empty( $waffers_mu_dir ) ) {
 }
 
 // 5. Clean up .htaccess and .user.ini blocks
-$waffers_root_dir = defined( 'ABSPATH' ) ? ABSPATH : dirname( dirname( __DIR__ ) ) . '/';
+$waffers_root_dir = defined( 'ABSPATH' ) ? ABSPATH : '';
 
-$waffers_htaccess = $waffers_root_dir . '.htaccess';
-if ( file_exists( $waffers_htaccess ) && is_writable( $waffers_htaccess ) ) {
-	$waffers_content  = file_get_contents( $waffers_htaccess );
-	$waffers_patterns = array(
-		'/# BEGIN Waffers Security Rules.*?# END Waffers Security Rules\s*/s',
-		'/# BEGIN PHP Armor Security Rules.*?# END PHP Armor Security Rules\s*/s',
-	);
-	foreach ( $waffers_patterns as $waffers_p ) {
-		$waffers_content = preg_replace( $waffers_p, '', $waffers_content );
-	}
-	// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-	@file_put_contents( $waffers_htaccess, $waffers_content, LOCK_EX );
-}
-
-$waffers_user_ini = $waffers_root_dir . '.user.ini';
-if ( file_exists( $waffers_user_ini ) && is_writable( $waffers_user_ini ) ) {
-	$waffers_ini_content  = file_get_contents( $waffers_user_ini );
-	$waffers_ini_patterns = array(
-		'/; BEGIN Waffers Security Directives.*?; END Waffers Security Directives\s*/s',
-		'/; BEGIN PHP Armor Security Directives.*?; END PHP Armor Security Directives\s*/s',
-	);
-	foreach ( $waffers_ini_patterns as $waffers_p ) {
-		$waffers_ini_content = preg_replace( $waffers_p, '', $waffers_ini_content );
-	}
-	$waffers_cleaned = trim( $waffers_ini_content );
-	if ( empty( $waffers_cleaned ) ) {
-		if ( function_exists( 'wp_delete_file' ) ) {
-			wp_delete_file( $waffers_user_ini );
+if ( ! empty( $waffers_root_dir ) ) {
+	$waffers_htaccess = $waffers_root_dir . '.htaccess';
+	if ( file_exists( $waffers_htaccess ) && wp_is_writable( $waffers_htaccess ) ) {
+		$waffers_content  = file_get_contents( $waffers_htaccess );
+		$waffers_patterns = array(
+			'/# BEGIN Waffers Security Rules.*?# END Waffers Security Rules\s*/s',
+			'/# BEGIN PHP Armor Security Rules.*?# END PHP Armor Security Rules\s*/s',
+		);
+		foreach ( $waffers_patterns as $waffers_p ) {
+			$waffers_content = preg_replace( $waffers_p, '', $waffers_content );
 		}
-	} else {
 		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
-		@file_put_contents( $waffers_user_ini, $waffers_cleaned, LOCK_EX );
+		@file_put_contents( $waffers_htaccess, $waffers_content, LOCK_EX );
+	}
+
+	$waffers_user_ini = $waffers_root_dir . '.user.ini';
+	if ( file_exists( $waffers_user_ini ) && wp_is_writable( $waffers_user_ini ) ) {
+		$waffers_ini_content  = file_get_contents( $waffers_user_ini );
+		$waffers_ini_patterns = array(
+			'/; BEGIN Waffers Security Directives.*?; END Waffers Security Directives\s*/s',
+			'/; BEGIN PHP Armor Security Directives.*?; END PHP Armor Security Directives\s*/s',
+		);
+		foreach ( $waffers_ini_patterns as $waffers_p ) {
+			$waffers_ini_content = preg_replace( $waffers_p, '', $waffers_ini_content );
+		}
+		$waffers_cleaned = trim( $waffers_ini_content );
+		if ( empty( $waffers_cleaned ) ) {
+			if ( function_exists( 'wp_delete_file' ) ) {
+				wp_delete_file( $waffers_user_ini );
+			}
+		} else {
+			// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents
+			@file_put_contents( $waffers_user_ini, $waffers_cleaned, LOCK_EX );
+		}
 	}
 }

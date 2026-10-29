@@ -14,16 +14,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="php-armor-header-title">
 			<span class="dashicons dashicons-shield-alt shield-icon"></span>
 			<div>
-				<h1><?php esc_html_e( 'Live Attack & Threat Logs', 'waffers-the-layer-that-protects-you' ); ?></h1>
-				<p class="subtitle"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ); ?></p>
+				<h1><?php esc_html_e( 'Live Attack & Threat Logs', 'waffers' ); ?></h1>
+				<p class="subtitle"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers' ); ?></p>
 			</div>
 		</div>
 		<div class="php-armor-header-actions">
 			<a href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=waffers_export_csv' ), 'waffers_export_csv' ) ); ?>" class="button button-secondary">
-				<span class="dashicons dashicons-download"></span> <?php esc_html_e( 'Export to CSV', 'waffers-the-layer-that-protects-you' ); ?>
+				<span class="dashicons dashicons-download"></span> <?php esc_html_e( 'Export to CSV', 'waffers' ); ?>
 			</a>
 			<button type="button" class="button button-link-delete" id="clear-logs-btn">
-				<span class="dashicons dashicons-trash"></span> <?php esc_html_e( 'Clear All Logs', 'waffers-the-layer-that-protects-you' ); ?>
+				<span class="dashicons dashicons-trash"></span> <?php esc_html_e( 'Clear All Logs', 'waffers' ); ?>
 			</button>
 		</div>
 	</div>
@@ -34,24 +34,24 @@ if ( ! defined( 'ABSPATH' ) ) {
 			<input type="hidden" name="page" value="waffers-logs">
 			<div class="filter-row">
 				<div class="filter-item">
-					<label for="search-input"><?php esc_html_e( 'Search Logs:', 'waffers-the-layer-that-protects-you' ); ?></label>
-					<input type="text" id="search-input" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'IP, URI, Incident ID, payload...', 'waffers-the-layer-that-protects-you' ); ?>">
+					<label for="search-input"><?php esc_html_e( 'Search Logs:', 'waffers' ); ?></label>
+					<input type="text" id="search-input" name="s" value="<?php echo esc_attr( $search ); ?>" placeholder="<?php esc_attr_e( 'IP, URI, Incident ID, payload...', 'waffers' ); ?>">
 				</div>
 				<div class="filter-item">
-					<label for="cve-select"><?php esc_html_e( 'Filter by CVE:', 'waffers-the-layer-that-protects-you' ); ?></label>
+					<label for="cve-select"><?php esc_html_e( 'Filter by CVE:', 'waffers' ); ?></label>
 					<select id="cve-select" name="cve">
-						<option value=""><?php esc_html_e( 'All Vulnerabilities', 'waffers-the-layer-that-protects-you' ); ?></option>
-						<option value="CVE-2026-109619" <?php selected( $cve, 'CVE-2026-109619' ); ?>><?php esc_html_e( 'PHP2Shell (CVE-2026-109619)', 'waffers-the-layer-that-protects-you' ); ?></option>
-						<option value="CVE-2024-4577" <?php selected( $cve, 'CVE-2024-4577' ); ?>><?php esc_html_e( 'PHP-CGI Injection (CVE-2024-4577)', 'waffers-the-layer-that-protects-you' ); ?></option>
-						<option value="CVE-2024-2961" <?php selected( $cve, 'CVE-2024-2961' ); ?>><?php esc_html_e( 'iconv Filter Chain (CVE-2024-2961)', 'waffers-the-layer-that-protects-you' ); ?></option>
-						<option value="CVE-2024-8927" <?php selected( $cve, 'CVE-2024-8927' ); ?>><?php esc_html_e( 'Multipart DOS (CVE-2024-8927)', 'waffers-the-layer-that-protects-you' ); ?></option>
-						<option value="CWE-502" <?php selected( $cve, 'CWE-502' ); ?>><?php esc_html_e( 'Object Injection (CWE-502)', 'waffers-the-layer-that-protects-you' ); ?></option>
+						<option value=""><?php esc_html_e( 'All Vulnerabilities', 'waffers' ); ?></option>
+						<option value="CVE-2026-109619" <?php selected( $cve, 'CVE-2026-109619' ); ?>><?php esc_html_e( 'PHP2Shell (CVE-2026-109619)', 'waffers' ); ?></option>
+						<option value="CVE-2024-4577" <?php selected( $cve, 'CVE-2024-4577' ); ?>><?php esc_html_e( 'PHP-CGI Injection (CVE-2024-4577)', 'waffers' ); ?></option>
+						<option value="CVE-2024-2961" <?php selected( $cve, 'CVE-2024-2961' ); ?>><?php esc_html_e( 'iconv Filter Chain (CVE-2024-2961)', 'waffers' ); ?></option>
+						<option value="CVE-2024-8927" <?php selected( $cve, 'CVE-2024-8927' ); ?>><?php esc_html_e( 'Multipart DOS (CVE-2024-8927)', 'waffers' ); ?></option>
+						<option value="CWE-502" <?php selected( $cve, 'CWE-502' ); ?>><?php esc_html_e( 'Object Injection (CWE-502)', 'waffers' ); ?></option>
 					</select>
 				</div>
 				<div class="filter-item filter-btn-col">
-					<button type="submit" class="button button-primary"><?php esc_html_e( 'Apply Filters', 'waffers-the-layer-that-protects-you' ); ?></button>
+					<button type="submit" class="button button-primary"><?php esc_html_e( 'Apply Filters', 'waffers' ); ?></button>
 					<?php if ( ! empty( $search ) || ! empty( $cve ) ) : ?>
-						<a href="<?php echo esc_url( admin_url( 'admin.php?page=waffers-logs' ) ); ?>" class="button"><?php esc_html_e( 'Reset', 'waffers-the-layer-that-protects-you' ); ?></a>
+						<a href="<?php echo esc_url( admin_url( 'admin.php?page=waffers-logs' ) ); ?>" class="button"><?php esc_html_e( 'Reset', 'waffers' ); ?></a>
 					<?php endif; ?>
 				</div>
 			</div>
@@ -61,16 +61,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<!-- Logs Table -->
 	<div class="php-armor-card">
 		<div class="table-top-meta">
-			<span><?php printf( esc_html__( 'Showing %1$d of %2$s recorded events', 'waffers-the-layer-that-protects-you' ), count( $log_data['logs'] ), esc_html( number_format_i18n( $log_data['total'] ) ) ); ?></span>
+			<span>
+				<?php
+				/* translators: 1: Number of entries currently displayed, 2: Total number of recorded events */
+				printf( esc_html__( 'Showing %1$d of %2$s recorded events', 'waffers' ), count( $log_data['logs'] ), esc_html( number_format_i18n( $log_data['total'] ) ) );
+				?>
+			</span>
 		</div>
 
 		<?php if ( empty( $log_data['logs'] ) ) : ?>
 			<div class="empty-state">
 				<span class="dashicons dashicons-shield empty-icon"></span>
-				<h3><?php esc_html_e( 'No Security Events Recorded', 'waffers-the-layer-that-protects-you' ); ?></h3>
-				<p><?php esc_html_e( 'Your site has not intercepted any matching PHP attack payloads yet, or logs were recently cleared.', 'waffers-the-layer-that-protects-you' ); ?></p>
+				<h3><?php esc_html_e( 'No Security Events Recorded', 'waffers' ); ?></h3>
+				<p><?php esc_html_e( 'Your site has not intercepted any matching PHP attack payloads yet, or logs were recently cleared.', 'waffers' ); ?></p>
 				<a href="<?php echo esc_url( admin_url( 'admin.php?page=waffers-simulator' ) ); ?>" class="button button-secondary">
-					<?php esc_html_e( 'Run Exploit Simulator to Test Logs', 'waffers-the-layer-that-protects-you' ); ?>
+					<?php esc_html_e( 'Run Exploit Simulator to Test Logs', 'waffers' ); ?>
 				</a>
 			</div>
 		<?php else : ?>
@@ -78,15 +83,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 				<table class="wp-list-table widefat striped attack-log-table">
 					<thead>
 						<tr>
-							<th style="width: 130px;"><?php esc_html_e( 'Date / Time (UTC)', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th style="width: 90px;"><?php esc_html_e( 'Incident ID', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th style="width: 120px;"><?php esc_html_e( 'Client IP', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th style="width: 140px;"><?php esc_html_e( 'Vulnerability', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th><?php esc_html_e( 'Attack Type / Rule', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th style="width: 80px;"><?php esc_html_e( 'Method', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th><?php esc_html_e( 'Target URI', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th style="width: 90px;"><?php esc_html_e( 'Action', 'waffers-the-layer-that-protects-you' ); ?></th>
-							<th style="width: 80px;"><?php esc_html_e( 'Payload', 'waffers-the-layer-that-protects-you' ); ?></th>
+							<th style="width: 130px;"><?php esc_html_e( 'Date / Time (UTC)', 'waffers' ); ?></th>
+							<th style="width: 90px;"><?php esc_html_e( 'Incident ID', 'waffers' ); ?></th>
+							<th style="width: 120px;"><?php esc_html_e( 'Client IP', 'waffers' ); ?></th>
+							<th style="width: 140px;"><?php esc_html_e( 'Vulnerability', 'waffers' ); ?></th>
+							<th><?php esc_html_e( 'Attack Type / Rule', 'waffers' ); ?></th>
+							<th style="width: 80px;"><?php esc_html_e( 'Method', 'waffers' ); ?></th>
+							<th><?php esc_html_e( 'Target URI', 'waffers' ); ?></th>
+							<th style="width: 90px;"><?php esc_html_e( 'Action', 'waffers' ); ?></th>
+							<th style="width: 80px;"><?php esc_html_e( 'Payload', 'waffers' ); ?></th>
 						</tr>
 					</thead>
 					<tbody>
@@ -118,7 +123,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 										data-incident="<?php echo esc_attr( $waffers_log['incident_id'] ); ?>"
 										data-payload="<?php echo esc_attr( $waffers_log['payload_sample'] ); ?>"
 										data-agent="<?php echo esc_attr( $waffers_log['user_agent'] ); ?>">
-										<?php esc_html_e( 'View', 'waffers-the-layer-that-protects-you' ); ?>
+										<?php esc_html_e( 'View', 'waffers' ); ?>
 									</button>
 								</td>
 							</tr>
@@ -153,17 +158,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div id="payload-modal" class="php-armor-modal" style="display: none;">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h3><?php esc_html_e( 'Attack Payload Details', 'waffers-the-layer-that-protects-you' ); ?> (<span id="modal-incident-id"></span>)</h3>
+				<h3><?php esc_html_e( 'Attack Payload Details', 'waffers' ); ?> (<span id="modal-incident-id"></span>)</h3>
 				<span class="modal-close">&times;</span>
 			</div>
 			<div class="modal-body">
-				<label><strong><?php esc_html_e( 'Captured Payload Sample:', 'waffers-the-layer-that-protects-you' ); ?></strong></label>
+				<label><strong><?php esc_html_e( 'Captured Payload Sample:', 'waffers' ); ?></strong></label>
 				<pre id="modal-payload-text" class="payload-box code-font"></pre>
-				<label style="margin-top: 15px; display: block;"><strong><?php esc_html_e( 'User Agent:', 'waffers-the-layer-that-protects-you' ); ?></strong></label>
+				<label style="margin-top: 15px; display: block;"><strong><?php esc_html_e( 'User Agent:', 'waffers' ); ?></strong></label>
 				<div id="modal-user-agent" class="agent-box code-font"></div>
 			</div>
 			<div class="modal-footer">
-				<button type="button" class="button button-secondary modal-close-btn"><?php esc_html_e( 'Close', 'waffers-the-layer-that-protects-you' ); ?></button>
+				<button type="button" class="button button-secondary modal-close-btn"><?php esc_html_e( 'Close', 'waffers' ); ?></button>
 			</div>
 		</div>
 	</div>

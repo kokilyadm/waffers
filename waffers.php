@@ -9,7 +9,7 @@
  * Author:            Waffers Security
  * License:           GPL-2.0+
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       waffers-the-layer-that-protects-you
+ * Text Domain:       waffers
  * Domain Path:       /languages
  *
  * @package           Waffers
@@ -51,7 +51,7 @@ add_filter( 'plugin_action_links_' . plugin_basename( __FILE__ ), function( $lin
 	$settings_link = sprintf(
 		'<a href="%s">%s</a>',
 		esc_url( admin_url( 'admin.php?page=waffers' ) ),
-		esc_html__( 'Security Dashboard', 'waffers-the-layer-that-protects-you' )
+		esc_html__( 'Security Dashboard', 'waffers' )
 	);
 	array_unshift( $links, $settings_link );
 	return $links;

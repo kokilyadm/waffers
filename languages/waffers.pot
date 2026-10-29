@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Domain: waffers-the-layer-that-protects-you\n"
+"X-Domain: waffers\n"
 
 #: waffers.php:56
 msgid "Security Dashboard"
