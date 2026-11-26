@@ -681,7 +681,8 @@ class Waffers_Firewall {
 			$output .= '</p>';
 			$output .= '<p><small>' . esc_html__( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ) . '</small></p>';
 
-			wp_die( $output, esc_html__( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ), array( 'response' => 403 ) );
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			wp_die( wp_kses_post( $output ), esc_html__( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ), array( 'response' => 403 ) );
 		}
 
 		?>

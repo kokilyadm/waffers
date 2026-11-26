@@ -3,7 +3,7 @@
  * Plugin Name:       Waffers — The layer that protects you
  * Plugin URI:        https://github.com/kokilyadm/waffers
  * Description:       The layer that protects you. Proactive defense-in-depth Web Application Firewall mitigating recent critical PHP engine vulnerabilities including PHP2Shell (CVE-2026-109618/9), PHP-CGI Argument Injection (CVE-2024-4577), iconv Filter Chains (CVE-2024-2961), and stream wrapper abuse.
- * Version:           1.0.1
+ * Version:           1.0.2
  * Requires at least: 5.4
  * Requires PHP:      7.2
  * Author:            Waffers Security
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Define Plugin Constants
-define( 'WAFFERS_VERSION', '1.0.1' );
+define( 'WAFFERS_VERSION', '1.0.2' );
 define( 'WAFFERS_FILE', __FILE__ );
 define( 'WAFFERS_PATH', plugin_dir_path( __FILE__ ) );
 define( 'WAFFERS_URL', plugin_dir_url( __FILE__ ) );

@@ -4,7 +4,7 @@ Tags: security, firewall, waf, cve-2024-4577, vulnerability
 Requires at least: 5.4
 Tested up to: 7.1
 Requires PHP: 7.2
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -73,6 +73,9 @@ No. Waffers is strictly targeted at exploit strings (such as soft-hyphen switche
 5. Exploit Simulator console verifying active interception of CVE probes.
 
 == Changelog ==
+
+= 1.0.2 =
+* Escaped block template output via wp_kses_post() to resolve OutputNotEscaped check.
 
 = 1.0.1 =
 * WordPress.org repository review compliance updates.
