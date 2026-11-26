@@ -14,8 +14,8 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="php-armor-header-title">
 			<span class="dashicons dashicons-shield-alt shield-icon"></span>
 			<div>
-				<h1><?php esc_html_e( 'Server-Level Hardening & Early Defense', 'waffers' ); ?></h1>
-				<p class="subtitle"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers' ); ?></p>
+				<h1><?php esc_html_e( 'Server-Level Hardening & Early Defense', 'waffers-the-layer-that-protects-you' ); ?></h1>
+				<p class="subtitle"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ); ?></p>
 			</div>
 		</div>
 	</div>
@@ -24,9 +24,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 	<div class="hardening-intro-banner">
 		<span class="dashicons dashicons-info banner-icon"></span>
 		<div>
-			<strong><?php esc_html_e( 'Why Server-Level Hardening is Crucial for PHP CVEs:', 'waffers' ); ?></strong>
+			<strong><?php esc_html_e( 'Why Server-Level Hardening is Crucial for PHP CVEs:', 'waffers-the-layer-that-protects-you' ); ?></strong>
 			<p>
-				<?php esc_html_e( 'Vulnerabilities like PHP2Shell (CVE-2026-109618/9) and CVE-2024-4577 target the PHP binary or its request parser before standard WordPress plugins load. Configuring .user.ini and .htaccess stops malicious payloads at the web server and PHP engine boundary.', 'waffers' ); ?>
+				<?php esc_html_e( 'Vulnerabilities like PHP2Shell (CVE-2026-109618/9) and CVE-2024-4577 target the PHP binary or its request parser before standard WordPress plugins load. Configuring .user.ini and .htaccess stops malicious payloads at the web server and PHP engine boundary.', 'waffers-the-layer-that-protects-you' ); ?>
 			</p>
 		</div>
 	</div>
@@ -36,13 +36,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 		<div class="php-armor-card hardening-card">
 			<div class="card-top-status">
 				<span class="status-pill <?php echo $is_user_ini_active ? 'status-pill-good' : 'status-pill-warn'; ?>">
-					<?php echo $is_user_ini_active ? esc_html__( 'ACTIVE & HARDENED', 'waffers' ) : esc_html__( 'NOT INSTALLED', 'waffers' ); ?>
+					<?php echo $is_user_ini_active ? esc_html__( 'ACTIVE & HARDENED', 'waffers-the-layer-that-protects-you' ) : esc_html__( 'NOT INSTALLED', 'waffers-the-layer-that-protects-you' ); ?>
 				</span>
-				<span class="tech-label"><?php esc_html_e( 'PHP-FPM / CGI Directives', 'waffers' ); ?></span>
+				<span class="tech-label"><?php esc_html_e( 'PHP-FPM / CGI Directives', 'waffers-the-layer-that-protects-you' ); ?></span>
 			</div>
-			<h3><?php esc_html_e( '1. PHP INI Directives (.user.ini)', 'waffers' ); ?></h3>
+			<h3><?php esc_html_e( '1. PHP INI Directives (.user.ini)', 'waffers-the-layer-that-protects-you' ); ?></h3>
 			<p class="card-desc">
-				<?php esc_html_e( 'Deploys directives into the WordPress root directory .user.ini. This turns off session.upload_progress.enabled, disables allow_url_include, and hides PHP version headers without editing the global php.ini.', 'waffers' ); ?>
+				<?php esc_html_e( 'Deploys directives into the WordPress root directory .user.ini. This turns off session.upload_progress.enabled, disables allow_url_include, and hides PHP version headers without editing the global php.ini.', 'waffers-the-layer-that-protects-you' ); ?>
 			</p>
 			<div class="code-preview">
 ; Waffers Hardening
@@ -54,14 +54,14 @@ auto_prepend_file = "early-waf.php"
 			<div class="card-action-bar">
 				<?php if ( $is_user_ini_active ) : ?>
 					<button type="button" class="button button-secondary hardening-action-btn" data-target="user_ini" data-action="remove">
-						<?php esc_html_e( 'Remove Directives', 'waffers' ); ?>
+						<?php esc_html_e( 'Remove Directives', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 					<button type="button" class="button button-primary hardening-action-btn" data-target="user_ini" data-action="apply">
-						<?php esc_html_e( 'Re-Apply / Update', 'waffers' ); ?>
+						<?php esc_html_e( 'Re-Apply / Update', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 				<?php else : ?>
 					<button type="button" class="button button-primary hardening-action-btn" data-target="user_ini" data-action="apply">
-						<span class="dashicons dashicons-yes"></span> <?php esc_html_e( '1-Click Install .user.ini Hardening', 'waffers' ); ?>
+						<span class="dashicons dashicons-yes"></span> <?php esc_html_e( '1-Click Install .user.ini Hardening', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 				<?php endif; ?>
 			</div>
@@ -71,13 +71,13 @@ auto_prepend_file = "early-waf.php"
 		<div class="php-armor-card hardening-card">
 			<div class="card-top-status">
 				<span class="status-pill <?php echo $is_htaccess_active ? 'status-pill-good' : 'status-pill-warn'; ?>">
-					<?php echo $is_htaccess_active ? esc_html__( 'ACTIVE & HARDENED', 'waffers' ) : esc_html__( 'NOT INSTALLED', 'waffers' ); ?>
+					<?php echo $is_htaccess_active ? esc_html__( 'ACTIVE & HARDENED', 'waffers-the-layer-that-protects-you' ) : esc_html__( 'NOT INSTALLED', 'waffers-the-layer-that-protects-you' ); ?>
 				</span>
-				<span class="tech-label"><?php esc_html_e( 'Apache / LiteSpeed', 'waffers' ); ?></span>
+				<span class="tech-label"><?php esc_html_e( 'Apache / LiteSpeed', 'waffers-the-layer-that-protects-you' ); ?></span>
 			</div>
-			<h3><?php esc_html_e( '2. Apache Web Server Rules (.htaccess)', 'waffers' ); ?></h3>
+			<h3><?php esc_html_e( '2. Apache Web Server Rules (.htaccess)', 'waffers-the-layer-that-protects-you' ); ?></h3>
 			<p class="card-desc">
-				<?php esc_html_e( 'Injects Apache mod_rewrite rules directly into your root .htaccess file to drop requests carrying the soft-hyphen character (%ad) and command line arguments (CVE-2024-4577) before PHP is invoked.', 'waffers' ); ?>
+				<?php esc_html_e( 'Injects Apache mod_rewrite rules directly into your root .htaccess file to drop requests carrying the soft-hyphen character (%ad) and command line arguments (CVE-2024-4577) before PHP is invoked.', 'waffers-the-layer-that-protects-you' ); ?>
 			</p>
 			<div class="code-preview">
 # BEGIN Waffers Security Rules
@@ -90,14 +90,14 @@ RewriteRule .* - [F,L]
 			<div class="card-action-bar">
 				<?php if ( $is_htaccess_active ) : ?>
 					<button type="button" class="button button-secondary hardening-action-btn" data-target="htaccess" data-action="remove">
-						<?php esc_html_e( 'Remove .htaccess Rules', 'waffers' ); ?>
+						<?php esc_html_e( 'Remove .htaccess Rules', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 					<button type="button" class="button button-primary hardening-action-btn" data-target="htaccess" data-action="apply">
-						<?php esc_html_e( 'Re-Apply / Update', 'waffers' ); ?>
+						<?php esc_html_e( 'Re-Apply / Update', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 				<?php else : ?>
 					<button type="button" class="button button-primary hardening-action-btn" data-target="htaccess" data-action="apply">
-						<span class="dashicons dashicons-yes"></span> <?php esc_html_e( '1-Click Install .htaccess Rules', 'waffers' ); ?>
+						<span class="dashicons dashicons-yes"></span> <?php esc_html_e( '1-Click Install .htaccess Rules', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 				<?php endif; ?>
 			</div>
@@ -109,22 +109,22 @@ RewriteRule .* - [F,L]
 		<div class="php-armor-card hardening-card">
 			<div class="card-top-status">
 				<span class="status-pill <?php echo $is_mu_active ? 'status-pill-good' : 'status-pill-warn'; ?>">
-					<?php echo $is_mu_active ? esc_html__( 'MU-PLUGIN ACTIVE', 'waffers' ) : esc_html__( 'NOT INSTALLED', 'waffers' ); ?>
+					<?php echo $is_mu_active ? esc_html__( 'MU-PLUGIN ACTIVE', 'waffers-the-layer-that-protects-you' ) : esc_html__( 'NOT INSTALLED', 'waffers-the-layer-that-protects-you' ); ?>
 				</span>
-				<span class="tech-label"><?php esc_html_e( 'WordPress Bootstrap', 'waffers' ); ?></span>
+				<span class="tech-label"><?php esc_html_e( 'WordPress Bootstrap', 'waffers-the-layer-that-protects-you' ); ?></span>
 			</div>
-			<h3><?php esc_html_e( '3. Must-Use (MU-Plugin) Early Loader', 'waffers' ); ?></h3>
+			<h3><?php esc_html_e( '3. Must-Use (MU-Plugin) Early Loader', 'waffers-the-layer-that-protects-you' ); ?></h3>
 			<p class="card-desc">
-				<?php esc_html_e( 'Creates wp-content/mu-plugins/waffers-early-loader.php. Must-Use plugins execute automatically before standard plugins and themes, ensuring your firewall evaluates requests ahead of any vulnerable third-party code.', 'waffers' ); ?>
+				<?php esc_html_e( 'Creates wp-content/mu-plugins/waffers-early-loader.php. Must-Use plugins execute automatically before standard plugins and themes, ensuring your firewall evaluates requests ahead of any vulnerable third-party code.', 'waffers-the-layer-that-protects-you' ); ?>
 			</p>
 			<div class="card-action-bar" style="margin-top: 40px;">
 				<?php if ( $is_mu_active ) : ?>
 					<button type="button" class="button button-secondary hardening-action-btn" data-target="mu_loader" data-action="remove">
-						<?php esc_html_e( 'Remove MU-Plugin Loader', 'waffers' ); ?>
+						<?php esc_html_e( 'Remove MU-Plugin Loader', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 				<?php else : ?>
 					<button type="button" class="button button-primary hardening-action-btn" data-target="mu_loader" data-action="apply">
-						<span class="dashicons dashicons-yes"></span> <?php esc_html_e( 'Install MU-Plugin Early Loader', 'waffers' ); ?>
+						<span class="dashicons dashicons-yes"></span> <?php esc_html_e( 'Install MU-Plugin Early Loader', 'waffers-the-layer-that-protects-you' ); ?>
 					</button>
 				<?php endif; ?>
 			</div>
@@ -133,19 +133,19 @@ RewriteRule .* - [F,L]
 		<!-- Card 4: Nginx Configuration -->
 		<div class="php-armor-card hardening-card">
 			<div class="card-top-status">
-				<span class="status-pill status-pill-info"><?php esc_html_e( 'MANUAL DEPLOYMENT', 'waffers' ); ?></span>
-				<span class="tech-label"><?php esc_html_e( 'Nginx Engine', 'waffers' ); ?></span>
+				<span class="status-pill status-pill-info"><?php esc_html_e( 'MANUAL DEPLOYMENT', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span class="tech-label"><?php esc_html_e( 'Nginx Engine', 'waffers-the-layer-that-protects-you' ); ?></span>
 			</div>
-			<h3><?php esc_html_e( '4. Nginx Server Configuration', 'waffers' ); ?></h3>
+			<h3><?php esc_html_e( '4. Nginx Server Configuration', 'waffers-the-layer-that-protects-you' ); ?></h3>
 			<p class="card-desc">
-				<?php esc_html_e( 'Because Nginx does not allow runtime directory file modifications (like .htaccess), add these directives inside your Nginx server block to drop CVE-2024-4577 and CVE-2024-2961 at the web server tier.', 'waffers' ); ?>
+				<?php esc_html_e( 'Because Nginx does not allow runtime directory file modifications (like .htaccess), add these directives inside your Nginx server block to drop CVE-2024-4577 and CVE-2024-2961 at the web server tier.', 'waffers-the-layer-that-protects-you' ); ?>
 			</p>
 			<div class="code-preview" style="max-height: 140px; overflow-y: auto;">
 				<pre class="code-font" id="nginx-config-text"><?php echo esc_html( $nginx_snippet ); ?></pre>
 			</div>
 			<div class="card-action-bar">
 				<button type="button" class="button button-secondary" id="copy-nginx-btn">
-					<span class="dashicons dashicons-clipboard"></span> <?php esc_html_e( 'Copy Nginx Directives', 'waffers' ); ?>
+					<span class="dashicons dashicons-clipboard"></span> <?php esc_html_e( 'Copy Nginx Directives', 'waffers-the-layer-that-protects-you' ); ?>
 				</button>
 			</div>
 		</div>

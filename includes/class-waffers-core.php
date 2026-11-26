@@ -117,18 +117,18 @@ class Waffers_Core {
 			'<p>%s</p>' .
 			'<h3>%s</h3>' .
 			'<p>%s</p>',
-			esc_html__( 'Waffers Web Application Firewall', 'waffers' ),
-			esc_html__( 'Waffers operates locally on this web server to protect this website against PHP engine vulnerabilities, malicious requests, and remote exploit attempts.', 'waffers' ),
-			esc_html__( 'What Personal Data is Collected and Why', 'waffers' ),
-			esc_html__( 'When an HTTP request triggers a security defense rule, Waffers records the visitor’s IP address, User-Agent, request timestamp, target URI, and a sample of the intercepted attack payload in the local site database. This information is processed strictly under legitimate interest to prevent unauthorized system access, block exploits, and maintain site security.', 'waffers' ),
-			esc_html__( 'Data Retention & Deletion', 'waffers' ),
-			esc_html__( 'Recorded security logs are automatically pruned after 30 days or retained up to a maximum of 10,000 entries. Administrators may also clear all logged events at any time via the Waffers Attack Logs dashboard.', 'waffers' ),
-			esc_html__( 'Third-Party Sharing', 'waffers' ),
-			esc_html__( 'Waffers is a 100% self-hosted, standalone security firewall. No visitor data, IP addresses, or security telemetry are ever transmitted to external servers or third-party organizations.', 'waffers' )
+			esc_html__( 'Waffers Web Application Firewall', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Waffers operates locally on this web server to protect this website against PHP engine vulnerabilities, malicious requests, and remote exploit attempts.', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'What Personal Data is Collected and Why', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'When an HTTP request triggers a security defense rule, Waffers records the visitor’s IP address, User-Agent, request timestamp, target URI, and a sample of the intercepted attack payload in the local site database. This information is processed strictly under legitimate interest to prevent unauthorized system access, block exploits, and maintain site security.', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Data Retention & Deletion', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Recorded security logs are automatically pruned after 30 days or retained up to a maximum of 10,000 entries. Administrators may also clear all logged events at any time via the Waffers Attack Logs dashboard.', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Third-Party Sharing', 'waffers-the-layer-that-protects-you' ),
+			esc_html__( 'Waffers is a 100% self-hosted, standalone security firewall. No visitor data, IP addresses, or security telemetry are ever transmitted to external servers or third-party organizations.', 'waffers-the-layer-that-protects-you' )
 		);
 
 		wp_add_privacy_policy_content(
-			__( 'Waffers — The layer that protects you', 'waffers' ),
+			__( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ),
 			wp_kses_post( wpautop( $content, false ) )
 		);
 	}

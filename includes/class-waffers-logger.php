@@ -395,13 +395,13 @@ class Waffers_Logger {
 	 */
 	public static function export_csv() {
 		if ( ! current_user_can( 'manage_options' ) ) {
-			wp_die( esc_html__( 'Unauthorized user action.', 'waffers' ), 403 );
+			wp_die( esc_html__( 'Unauthorized user action.', 'waffers-the-layer-that-protects-you' ), 403 );
 		}
 
 		// Verify nonce for either waffers or legacy action
 		$nonce = isset( $_GET['_wpnonce'] ) ? sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ) : '';
 		if ( ! wp_verify_nonce( $nonce, 'waffers_export_csv' ) && ! wp_verify_nonce( $nonce, 'php_armor_export_csv' ) ) {
-			wp_die( esc_html__( 'Security verification failed. Please try again from the dashboard.', 'waffers' ), 403 );
+			wp_die( esc_html__( 'Security verification failed. Please try again from the dashboard.', 'waffers-the-layer-that-protects-you' ), 403 );
 		}
 
 		global $wpdb;

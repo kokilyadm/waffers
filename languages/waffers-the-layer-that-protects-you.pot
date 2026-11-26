@@ -1,0 +1,81 @@
+# Copyright (C) 2026 Waffers Security
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Waffers 1.0.0\n"
+"Report-Msgid-Bugs-To: https://github.com/kokilyadm/waffers/issues\n"
+"POT-Creation-Date: 2026-10-29 05:30:00+00:00\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2026-YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Domain: waffers-the-layer-that-protects-you\n"
+
+#: waffers.php:56
+msgid "Security Dashboard"
+msgstr ""
+
+#: includes/class-waffers-core.php:84
+msgid "Waffers Web Application Firewall"
+msgstr ""
+
+#: includes/class-waffers-core.php:85
+msgid "Waffers operates locally on this web server to protect this website against PHP engine vulnerabilities, malicious requests, and remote exploit attempts."
+msgstr ""
+
+#: includes/class-waffers-core.php:86
+msgid "What Personal Data is Collected and Why"
+msgstr ""
+
+#: includes/class-waffers-core.php:87
+msgid "When an HTTP request triggers a security defense rule, Waffers records the visitor’s IP address, User-Agent, request timestamp, target URI, and a sample of the intercepted attack payload in the local site database. This information is processed strictly under legitimate interest to prevent unauthorized system access, block exploits, and maintain site security."
+msgstr ""
+
+#: includes/class-waffers-core.php:88
+msgid "Data Retention & Deletion"
+msgstr ""
+
+#: includes/class-waffers-core.php:89
+msgid "Recorded security logs are automatically pruned after 30 days or retained up to a maximum of 10,000 entries. Administrators may also clear all logged events at any time via the Waffers Attack Logs dashboard."
+msgstr ""
+
+#: includes/class-waffers-core.php:90
+msgid "Third-Party Sharing"
+msgstr ""
+
+#: includes/class-waffers-core.php:91
+msgid "Waffers is a 100% self-hosted, standalone security firewall. No visitor data, IP addresses, or security telemetry are ever transmitted to external servers or third-party organizations."
+msgstr ""
+
+#: includes/class-waffers-core.php:94
+msgid "Waffers — The layer that protects you"
+msgstr ""
+
+#: admin/class-waffers-admin.php:38
+msgid "Waffers"
+msgstr ""
+
+#: admin/class-waffers-admin.php:49
+msgid "Dashboard & Audit"
+msgstr ""
+
+#: admin/class-waffers-admin.php:59
+msgid "Firewall Rules"
+msgstr ""
+
+#: admin/class-waffers-admin.php:69
+msgid "Server Hardening"
+msgstr ""
+
+#: admin/class-waffers-admin.php:79
+msgid "Attack Logs"
+msgstr ""
+
+#: admin/class-waffers-admin.php:89
+msgid "Exploit Simulator"
+msgstr ""
+

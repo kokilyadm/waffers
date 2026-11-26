@@ -760,33 +760,33 @@ class Waffers_Firewall {
 </head>
 <body>
 	<div class="card">
-		<div class="badge"><?php esc_html_e( 'SECURITY INTERVENTION', 'waffers' ); ?></div>
-		<h1><?php esc_html_e( '403 Forbidden: Request Blocked', 'waffers' ); ?></h1>
-		<p><?php esc_html_e( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers' ); ?></p>
+		<div class="badge"><?php esc_html_e( 'SECURITY INTERVENTION', 'waffers-the-layer-that-protects-you' ); ?></div>
+		<h1><?php esc_html_e( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ); ?></h1>
+		<p><?php esc_html_e( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers-the-layer-that-protects-you' ); ?></p>
 		<?php if ( ! empty( $custom_msg ) ) : ?>
 			<p><?php echo esc_html( $custom_msg ); ?></p>
 		<?php endif; ?>
 		<div class="details">
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Incident ID:', 'waffers' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Incident ID:', 'waffers-the-layer-that-protects-you' ); ?></span>
 				<span class="value"><?php echo esc_html( $incident_id ); ?></span>
 			</div>
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Detection Rule:', 'waffers' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Detection Rule:', 'waffers-the-layer-that-protects-you' ); ?></span>
 				<span class="value"><?php echo esc_html( $title ); ?> (<?php echo esc_html( $cve ); ?>)</span>
 			</div>
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Client IP:', 'waffers' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Client IP:', 'waffers-the-layer-that-protects-you' ); ?></span>
 				<span class="value"><?php echo esc_html( $client_ip ); ?></span>
 			</div>
 			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Timestamp:', 'waffers' ); ?></span>
+				<span class="label"><?php esc_html_e( 'Timestamp:', 'waffers-the-layer-that-protects-you' ); ?></span>
 				<span class="value"><?php echo esc_html( $time_str ); ?></span>
 			</div>
 		</div>
 		<div class="footer">
-			<span class="brand"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers' ); ?></span>
-			<span><?php esc_html_e( 'Secured by Waffers', 'waffers' ); ?></span>
+			<span class="brand"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ); ?></span>
+			<span><?php esc_html_e( 'Secured by Waffers', 'waffers-the-layer-that-protects-you' ); ?></span>
 		</div>
 	</div>
 </body>
