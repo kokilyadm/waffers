@@ -171,33 +171,16 @@ class Waffers_Core {
 	 * Plugin deactivation routine.
 	 */
 	public static function deactivate() {
-		if ( function_exists( 'wp_upload_dir' ) ) {
-			$upload = wp_upload_dir();
-			if ( ! empty( $upload['basedir'] ) && file_exists( $upload['basedir'] . '/waffers-config.json' ) ) {
-				if ( function_exists( 'wp_delete_file' ) ) {
-					wp_delete_file( $upload['basedir'] . '/waffers-config.json' );
-				} else {
-					// phpcs:ignore WordPress.WP.AlternativeFunctions.unlink_unlink
-					@unlink( $upload['basedir'] . '/waffers-config.json' );
-				}
-			}
-		}
+		// Clean deactivation; settings remain securely stored in WordPress options table.
 	}
 
 	/**
-	 * Sync WordPress settings to a local JSON file in uploads directory for standalone reading.
+	 * Standalone config sync stub (settings are securely maintained in database options).
 	 *
 	 * @param array $options Options array.
 	 */
 	public static function sync_standalone_config( $options ) {
-		if ( function_exists( 'wp_upload_dir' ) ) {
-			$upload = wp_upload_dir();
-			$upload_dir = ! empty( $upload['basedir'] ) ? $upload['basedir'] : '';
-			if ( ! empty( $upload_dir ) && wp_is_writable( $upload_dir ) ) {
-				// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
-				@file_put_contents( $upload_dir . '/waffers-config.json', wp_json_encode( $options ), LOCK_EX );
-			}
-		}
+		// Privileged settings are saved safely in the WordPress database (options table).
 	}
 }
 

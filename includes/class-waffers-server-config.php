@@ -334,23 +334,11 @@ class Waffers_Server_Config {
 	}
 
 	/**
-	 * Install Must-Use (MU-Plugin) Early Loader.
+	 * Generate code for Must-Use (MU-Plugin) Early Loader.
 	 *
-	 * @return array Result [success, message].
+	 * @return string PHP code snippet.
 	 */
-	public static function install_mu_loader() {
-		$mu_dir = defined( 'WPMU_PLUGIN_DIR' ) ? WPMU_PLUGIN_DIR : WP_CONTENT_DIR . '/mu-plugins';
-		if ( ! is_dir( $mu_dir ) ) {
-			$made = wp_mkdir_p( $mu_dir );
-			if ( ! $made ) {
-				return array(
-					'success' => false,
-					'message' => __( 'Could not create wp-content/mu-plugins directory. Check folder permissions.', 'waffers-the-layer-that-protects-you' ),
-				);
-			}
-		}
-
-		$target_file     = self::get_mu_loader_path();
+	public static function generate_mu_loader_code() {
 		$plugin_firewall = dirname( __DIR__ ) . '/early-waf.php';
 
 		$code  = "<?php\n";
@@ -364,36 +352,28 @@ class Waffers_Server_Config {
 		$code .= "}\n\n";
 		$code .= "\$early_file = '" . addslashes( $plugin_firewall ) . "';\n";
 		$code .= "if ( ! file_exists( \$early_file ) && defined( 'WP_PLUGIN_DIR' ) ) {\n";
-		$code .= "    if ( file_exists( WP_PLUGIN_DIR . '/waffers/early-waf.php' ) ) {\n";
+		$code .= "    if ( file_exists( WP_PLUGIN_DIR . '/waffers-the-layer-that-protects-you/early-waf.php' ) ) {\n";
+		$code .= "        \$early_file = WP_PLUGIN_DIR . '/waffers-the-layer-that-protects-you/early-waf.php';\n";
+		$code .= "    } elseif ( file_exists( WP_PLUGIN_DIR . '/waffers/early-waf.php' ) ) {\n";
 		$code .= "        \$early_file = WP_PLUGIN_DIR . '/waffers/early-waf.php';\n";
-		$code .= "    } elseif ( file_exists( WP_PLUGIN_DIR . '/php-armor/early-waf.php' ) ) {\n";
-		$code .= "        \$early_file = WP_PLUGIN_DIR . '/php-armor/early-waf.php';\n";
 		$code .= "    }\n";
 		$code .= "}\n\n";
 		$code .= "if ( file_exists( \$early_file ) ) {\n";
 		$code .= "    require_once \$early_file;\n";
 		$code .= "}\n";
 
-		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_system_operations_file_put_contents, PluginCheck.CodeAnalysis.WriteFile.ABSPATHDetected
-		$written = @file_put_contents( $target_file, $code, LOCK_EX );
-		if ( false === $written ) {
-			return array(
-				'success' => false,
-				'message' => __( 'Unable to write early loader file to wp-content/mu-plugins/.', 'waffers-the-layer-that-protects-you' ),
-			);
-		}
+		return $code;
+	}
 
-		// Also clean up legacy mu loader file if present
-		$legacy_file = self::get_legacy_mu_loader_path();
-		if ( file_exists( $legacy_file ) && $legacy_file !== $target_file ) {
-			if ( function_exists( 'wp_delete_file' ) ) {
-				wp_delete_file( $legacy_file );
-			}
-		}
-
+	/**
+	 * Inform users regarding Must-Use early loader deployment.
+	 *
+	 * @return array Result [success, message].
+	 */
+	public static function install_mu_loader() {
 		return array(
-			'success' => true,
-			'message' => __( 'Waffers Must-Use Early Loader installed successfully! It will now execute before all standard plugins.', 'waffers-the-layer-that-protects-you' ),
+			'success' => false,
+			'message' => __( 'Per WordPress.org guidelines, executable MU-plugin files must be placed manually in wp-content/mu-plugins/ by a server administrator.', 'waffers-the-layer-that-protects-you' ),
 		);
 	}
 

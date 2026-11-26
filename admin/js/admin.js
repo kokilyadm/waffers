@@ -91,13 +91,34 @@ jQuery(document).ready(function($) {
 				setTimeout(function() { $btn.html(orig); }, 3000);
 			});
 		} else {
-			// Fallback
 			var $temp = $('<textarea>');
 			$('body').append($temp);
 			$temp.val(text).select();
 			document.execCommand('copy');
 			$temp.remove();
 			alert('Nginx configuration copied to clipboard.');
+		}
+	});
+
+	// Copy MU-Plugin Code
+	$('#copy-mu-loader-btn').on('click', function(e) {
+		e.preventDefault();
+		var text = $('#mu-loader-code-text').text();
+		var $btn = $(this);
+
+		if (navigator.clipboard) {
+			navigator.clipboard.writeText(text).then(function() {
+				var orig = $btn.html();
+				$btn.html('<span class="dashicons dashicons-yes"></span> Copied to Clipboard!');
+				setTimeout(function() { $btn.html(orig); }, 3000);
+			});
+		} else {
+			var $temp = $('<textarea>');
+			$('body').append($temp);
+			$temp.val(text).select();
+			document.execCommand('copy');
+			$temp.remove();
+			alert('MU-Plugin code copied to clipboard.');
 		}
 	});
 

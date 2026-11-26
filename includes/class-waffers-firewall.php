@@ -667,6 +667,23 @@ class Waffers_Firewall {
 		$client_ip  = (string) self::get_client_ip();
 		$time_str   = gmdate( 'Y-m-d H:i:s' ) . ' UTC';
 
+		if ( function_exists( 'wp_die' ) ) {
+			$output  = '<h2>' . esc_html__( 'SECURITY INTERVENTION — 403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ) . '</h2>';
+			$output .= '<p>' . esc_html__( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers-the-layer-that-protects-you' ) . '</p>';
+			if ( ! empty( $custom_msg ) ) {
+				$output .= '<p>' . esc_html( $custom_msg ) . '</p>';
+			}
+			$output .= '<p>';
+			$output .= '<strong>' . esc_html__( 'Incident ID:', 'waffers-the-layer-that-protects-you' ) . '</strong> ' . esc_html( $incident_id ) . '<br>';
+			$output .= '<strong>' . esc_html__( 'Detection Rule:', 'waffers-the-layer-that-protects-you' ) . '</strong> ' . esc_html( $title ) . ' (' . esc_html( $cve ) . ')<br>';
+			$output .= '<strong>' . esc_html__( 'Client IP:', 'waffers-the-layer-that-protects-you' ) . '</strong> ' . esc_html( $client_ip ) . '<br>';
+			$output .= '<strong>' . esc_html__( 'Timestamp:', 'waffers-the-layer-that-protects-you' ) . '</strong> ' . esc_html( $time_str ) . '<br>';
+			$output .= '</p>';
+			$output .= '<p><small>' . esc_html__( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ) . '</small></p>';
+
+			wp_die( $output, esc_html__( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ), array( 'response' => 403 ) );
+		}
+
 		?>
 <!DOCTYPE html>
 <html lang="en">
@@ -675,117 +692,41 @@ class Waffers_Firewall {
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta name="robots" content="noindex, nofollow, noarchive">
 	<title>403 Forbidden - Request Blocked by Waffers</title>
-	<style>
-		:root {
-			--bg: #0f172a;
-			--card: #1e293b;
-			--border: #334155;
-			--danger: #ef4444;
-			--text: #f8fafc;
-			--muted: #94a3b8;
-		}
-		* { box-sizing: border-box; margin: 0; padding: 0; }
-		body {
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-			background-color: var(--bg);
-			color: var(--text);
-			min-height: 100vh;
-			display: flex;
-			align-items: center;
-			justify-content: center;
-			padding: 20px;
-		}
-		.card {
-			background: var(--card);
-			border: 1px solid var(--border);
-			border-radius: 12px;
-			max-width: 620px;
-			width: 100%;
-			padding: 36px;
-			box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
-		}
-		.badge {
-			display: inline-flex;
-			align-items: center;
-			background: rgba(239, 68, 68, 0.15);
-			color: var(--danger);
-			font-size: 13px;
-			font-weight: 600;
-			padding: 4px 12px;
-			border-radius: 9999px;
-			border: 1px solid rgba(239, 68, 68, 0.3);
-			margin-bottom: 20px;
-		}
-		h1 {
-			font-size: 24px;
-			font-weight: 700;
-			margin-bottom: 12px;
-			letter-spacing: -0.02em;
-		}
-		p {
-			color: var(--muted);
-			font-size: 15px;
-			line-height: 1.6;
-			margin-bottom: 20px;
-		}
-		.details {
-			background: #090d16;
-			border: 1px solid var(--border);
-			border-radius: 8px;
-			padding: 16px;
-			font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-			font-size: 13px;
-			margin-bottom: 24px;
-		}
-		.detail-row {
-			display: flex;
-			justify-content: space-between;
-			padding: 6px 0;
-			border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-		}
-		.detail-row:last-child { border-bottom: none; }
-		.label { color: var(--muted); }
-		.value { color: #38bdf8; font-weight: 500; }
-		.footer {
-			border-top: 1px solid var(--border);
-			padding-top: 18px;
-			font-size: 12px;
-			color: var(--muted);
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
-		.brand { font-weight: 600; color: #e2e8f0; }
-	</style>
 </head>
-<body>
-	<div class="card">
-		<div class="badge"><?php esc_html_e( 'SECURITY INTERVENTION', 'waffers-the-layer-that-protects-you' ); ?></div>
-		<h1><?php esc_html_e( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ); ?></h1>
-		<p><?php esc_html_e( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers-the-layer-that-protects-you' ); ?></p>
+<body style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0f172a;color:#f8fafc;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;margin:0;">
+	<div style="background:#1e293b;border:1px solid #334155;border-radius:12px;max-width:620px;width:100%;padding:36px;box-shadow:0 20px 25px -5px rgba(0,0,0,0.5);">
+		<div style="display:inline-block;background:rgba(239,68,68,0.15);color:#ef4444;font-size:13px;font-weight:600;padding:4px 12px;border-radius:9999px;border:1px solid rgba(239,68,68,0.3);margin-bottom:20px;">
+			<?php esc_html_e( 'SECURITY INTERVENTION', 'waffers-the-layer-that-protects-you' ); ?>
+		</div>
+		<h1 style="font-size:24px;font-weight:700;margin:0 0 12px 0;">
+			<?php esc_html_e( '403 Forbidden: Request Blocked', 'waffers-the-layer-that-protects-you' ); ?>
+		</h1>
+		<p style="color:#94a3b8;font-size:15px;line-height:1.6;margin:0 0 20px 0;">
+			<?php esc_html_e( 'Your request was identified as matching an exploit pattern targeting known PHP vulnerabilities and has been rejected by Waffers Web Application Firewall.', 'waffers-the-layer-that-protects-you' ); ?>
+		</p>
 		<?php if ( ! empty( $custom_msg ) ) : ?>
-			<p><?php echo esc_html( $custom_msg ); ?></p>
+			<p style="color:#94a3b8;font-size:15px;line-height:1.6;margin:0 0 20px 0;"><?php echo esc_html( $custom_msg ); ?></p>
 		<?php endif; ?>
-		<div class="details">
-			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Incident ID:', 'waffers-the-layer-that-protects-you' ); ?></span>
-				<span class="value"><?php echo esc_html( $incident_id ); ?></span>
+		<div style="background:#090d16;border:1px solid #334155;border-radius:8px;padding:16px;font-family:monospace;font-size:13px;margin-bottom:24px;">
+			<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+				<span style="color:#94a3b8;"><?php esc_html_e( 'Incident ID:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span style="color:#38bdf8;font-weight:500;"><?php echo esc_html( $incident_id ); ?></span>
 			</div>
-			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Detection Rule:', 'waffers-the-layer-that-protects-you' ); ?></span>
-				<span class="value"><?php echo esc_html( $title ); ?> (<?php echo esc_html( $cve ); ?>)</span>
+			<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+				<span style="color:#94a3b8;"><?php esc_html_e( 'Detection Rule:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span style="color:#38bdf8;font-weight:500;"><?php echo esc_html( $title ); ?> (<?php echo esc_html( $cve ); ?>)</span>
 			</div>
-			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Client IP:', 'waffers-the-layer-that-protects-you' ); ?></span>
-				<span class="value"><?php echo esc_html( $client_ip ); ?></span>
+			<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,0.05);">
+				<span style="color:#94a3b8;"><?php esc_html_e( 'Client IP:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span style="color:#38bdf8;font-weight:500;"><?php echo esc_html( $client_ip ); ?></span>
 			</div>
-			<div class="detail-row">
-				<span class="label"><?php esc_html_e( 'Timestamp:', 'waffers-the-layer-that-protects-you' ); ?></span>
-				<span class="value"><?php echo esc_html( $time_str ); ?></span>
+			<div style="display:flex;justify-content:space-between;padding:6px 0;">
+				<span style="color:#94a3b8;"><?php esc_html_e( 'Timestamp:', 'waffers-the-layer-that-protects-you' ); ?></span>
+				<span style="color:#38bdf8;font-weight:500;"><?php echo esc_html( $time_str ); ?></span>
 			</div>
 		</div>
-		<div class="footer">
-			<span class="brand"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ); ?></span>
+		<div style="border-top:1px solid #334155;padding-top:18px;font-size:12px;color:#94a3b8;display:flex;justify-content:space-between;align-items:center;">
+			<span style="font-weight:600;color:#e2e8f0;"><?php esc_html_e( 'Waffers — The layer that protects you', 'waffers-the-layer-that-protects-you' ); ?></span>
 			<span><?php esc_html_e( 'Secured by Waffers', 'waffers-the-layer-that-protects-you' ); ?></span>
 		</div>
 	</div>
